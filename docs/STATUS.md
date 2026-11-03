@@ -14,17 +14,20 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | P3 | Habit list | merged (QA pending) |
 | P4 | Week view | merged (QA pending) |
 | P5 | Month view | merged (QA pending) |
-| P6 | Reminders | in flight (`ph/p6-reminders`) |
+| P6 | Reminders | merged (QA pending) |
 | P7 | Settings, export/import, polish | not started |
 | S2 | Widget (stage 2) | not started |
 
 ## In flight
 
 - QA for P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34` (dispatched 00:27).
-- P6 — `ph/p6-reminders`, worktree `.run/wt/p6`, opus/high (dispatched 00:23; edits Features/Reminders and minimally HabitatApp.swift). P7 will not fit the clock (55 + 25 min) and is not started.
+- Re-plan hooks — `ph/replan-hooks`, worktree `.run/wt/hooks`, one-line `reminderSync?.replan()` calls in Habits/Week/Month (00:33). P7 will not fit the clock (55 + 25 min) and is not started.
 
 ## Open items
 
+- P6 review should-fix, not done: (1) `RemindersView.swift:14` fallback ReminderSync allocated per body evaluation (previews only); (2) reminder row time/days HStack should stack at accessibility sizes; (3) `ReminderSync.markDone` refused-toggle error is cleared immediately (dead branch); (4) no unit tests for MarkDoneTarget/RemindersViewModel.sections/ReminderFormat (needs a test target or moving to HabitatKit: P7); (5) `reminders.editor.habit` id used for both picker and the "No active habits" text.
+- `-fakeNotifications` always reports authorized, so UI tests cannot reach the denied-permission banner (needs a LaunchOptions/HabitatKit change).
+- Notification smoke test (PLAN §7) not written: needs the real scheduler and the system permission alert, no pinned -today.
 - `gate.sh full` is red on `integration` until QA updates the shell UI tests from `<tab>.placeholder` to the real screen ids (`habits.screen` already merged; week/month/reminders follow). Fast gate is green.
 - No app unit-test target (needs `project.yml` change): view models and pure builders (HabitWeekRow.make, MonthCellBuilder, DonutGeometry, HabitFormat) are untested outside QA XCUITests.
 - P3 reviewer notes not done: row layout at AX3+ sizes is not adapted (long names squeeze the streak counter).
@@ -47,6 +50,7 @@ Denied actions (permission, classifier, hook) are listed here with the exact com
 | 4 | 2026-11-03 | P0 implementer's `rm -rf build.noindex Habitat.xcodeproj` (clean rebuild) was refused by a local PreToolUse hook: "target is outside ~/IdeaProjects/b2spin, the Claude scratch area and $TMPDIR" | not retried; gate run incrementally | widen the hook's allowed paths to include this repo, or clean `build.noindex/` by hand |
 | 5 | 2026-11-04 | P1 default: two general reminders at the same time with overlapping weekdays clash even if their labels differ ("Water" and "Stretch" both 08:00 Mon are rejected) | clash regardless of label (literal "no target" reading) | treat the label as the target: change `Reminder.swift` duplicate check, update tests (P6 only) |
 | 6 | 2026-11-04 | P1 default: a weekly habit's creation week counts like any other, so a past creation week with c < N shows red when swiping back | no special case | add a creation-week exemption in `WeeklyStatus` |
+| 7 | 2026-11-04 | P6 reviewer's `git clone ... && git merge --no-commit integration` into the scratch folder was refused by the permission system | not retried; conflict check done by file-set analysis, then merged by the orchestrator (clean, fast gate PASS) | allow scratch-folder clones for reviewers |
 
 ## Run log
 
@@ -69,3 +73,4 @@ at the end.
 - P3 reviewed (ids convention resolved by amending docs/accessibility-ids.md; 5 fixes in 830157d), merged, fast gate PASS (00:24).
 - P4 reviewed twice (page order and per-page ids fixed), merged, fast gate PASS (00:26). QA P3+P4 dispatched 00:27.
 - P5 reviewed (3 contrast must-fix, fixed in 635de46), merged, fast gate PASS (00:27).
+- P6 reviewed (APPROVE, 5 should-fix), merged, fast gate PASS (00:32).
