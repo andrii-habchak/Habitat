@@ -33,3 +33,19 @@ Branch `ph/p0-qa`. Tests: `App/HabitatUITests/TabShellTests.swift` (9 new tests 
 
 - Tab buttons are found by label (see `docs/accessibility-ids.md`).
 - A stale `xcodebuild` for an unrelated project (Abacus) was running; Habitat had none.
+
+## Re-verification of the Month contrast fix (commit 98e296c)
+
+`scripts/gate.sh full`: FAIL. 14 tests, 5 failures: all five audit tests (Habits, Week, Month,
+Reminders, Settings) report "Contrast nearly passed" at `TabShellTests.swift:119`. Before the
+fix only Month failed ("Contrast failed"), so the new placeholder layout regresses the four tabs
+that used to pass. The xcresult names no element or frame. Suspected cause: the combined
+`<tab>.placeholder` element now holds the `.secondary` "Not built yet." line, which sits just
+under the audit's contrast threshold; the audit may also sample the title and subtitle as one
+element. A darker subtitle colour (for example `.primary` at reduced size, or an explicit
+colour) is the likely fix.
+
+Screenshots of all five tabs in light, dark and XXXL (scratch folder `fix/`): layout is clean
+and centred in all modes. Differences from the old placeholder: the icon is smaller and no
+longer scales with Dynamic Type (old XXXL icon was very large), and the title is a bold title2
+instead of the large system title. The Month calendar icon renders correctly. No clipping at XXXL.
