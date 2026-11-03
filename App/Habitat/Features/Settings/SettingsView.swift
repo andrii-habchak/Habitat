@@ -90,11 +90,15 @@ private struct SettingsScreen: View {
                 Text("About")
             }
         }
-        .sheet(isPresented: $showShare, onDismiss: { model.discardExport() }) {
-            if let url = model.exportURL {
-                ShareSheet(url: url).ignoresSafeArea()
+        .sheet(
+            isPresented: $showShare,
+            onDismiss: { model.discardExport() },
+            content: {
+                if let url = model.exportURL {
+                    ShareSheet(url: url).ignoresSafeArea()
+                }
             }
-        }
+        )
         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
             model.filePicked(result)
         }
