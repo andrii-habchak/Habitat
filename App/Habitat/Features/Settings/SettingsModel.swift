@@ -26,6 +26,7 @@ final class SettingsModel {
 
     func prepareExport() {
         exportError = nil
+        discardExport()
         do {
             let data = try services.dataTransfer().exportData()
             let url = FileManager.default.temporaryDirectory.appendingPathComponent(exportFileName)
@@ -34,6 +35,12 @@ final class SettingsModel {
         } catch {
             exportError = error.localizedDescription
         }
+    }
+
+    /// Removes the temp file and forgets it.
+    func discardExport() {
+        if let url = exportURL { try? FileManager.default.removeItem(at: url) }
+        exportURL = nil
     }
 
     /// Reads the picked file (security scoped) and asks for the mode.

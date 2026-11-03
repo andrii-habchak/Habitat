@@ -74,6 +74,7 @@ private struct SettingsScreen: View {
                             .font(.subheadline)
                             .foregroundStyle(.primary)
                     }
+                    .accessibilityElement(children: .combine)
                     .accessibilityIdentifier("settings.importError")
                 }
             } header: {
@@ -81,15 +82,15 @@ private struct SettingsScreen: View {
             }
 
             Section {
-                LabeledContent("App", value: SettingsModel.appName)
-                LabeledContent("Version", value: SettingsModel.versionText)
+                aboutRow("App", SettingsModel.appName)
+                aboutRow("Version", SettingsModel.versionText)
                 Text("Data stays on this device.")
                     .foregroundStyle(.primary)
             } header: {
                 Text("About")
             }
         }
-        .sheet(isPresented: $showShare) {
+        .sheet(isPresented: $showShare, onDismiss: { model.discardExport() }) {
             if let url = model.exportURL {
                 ShareSheet(url: url).ignoresSafeArea()
             }
@@ -109,6 +110,17 @@ private struct SettingsScreen: View {
             Text("Merge adds what is new and keeps your current data. "
                 + "Replace overwrites all current data with the file.")
         }
+    }
+
+    private func aboutRow(_ title: LocalizedStringKey, _ value: String) -> some View {
+        HStack {
+            Text(title)
+            Spacer(minLength: Theme.Spacing.medium)
+            Text(value)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.trailing)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private var pendingBinding: Binding<Bool> {
