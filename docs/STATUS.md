@@ -13,7 +13,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | P2 | HabitatData | merged (131 package tests, HabitatData 90.6 % coverage) |
 | P3 | Habit list | merged (QA pending) |
 | P4 | Week view | merged (QA pending) |
-| P5 | Month view | implemented (`ph/p5-month`), in review |
+| P5 | Month view | merged (QA pending) |
 | P6 | Reminders | in flight (`ph/p6-reminders`) |
 | P7 | Settings, export/import, polish | not started |
 | S2 | Widget (stage 2) | not started |
@@ -21,7 +21,6 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 ## In flight
 
 - QA for P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34` (dispatched 00:27).
-- P5 `ph/p5-month` (d72f9a4): reviewer running (00:22).
 - P6 — `ph/p6-reminders`, worktree `.run/wt/p6`, opus/high (dispatched 00:23; edits Features/Reminders and minimally HabitatApp.swift). P7 will not fit the clock (55 + 25 min) and is not started.
 
 ## Open items
@@ -69,3 +68,4 @@ at the end.
 - P5 implemented (gate PASS), reviewer dispatched 00:22. P6 dispatched 00:23 (needs only P2/P3-shaped data; P3 not required for the Reminders folder).
 - P3 reviewed (ids convention resolved by amending docs/accessibility-ids.md; 5 fixes in 830157d), merged, fast gate PASS (00:24).
 - P4 reviewed twice (page order and per-page ids fixed), merged, fast gate PASS (00:26). QA P3+P4 dispatched 00:27.
+- P5 reviewed (3 contrast must-fix, fixed in 635de46), merged, fast gate PASS (00:27).
