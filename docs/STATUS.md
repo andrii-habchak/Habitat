@@ -9,8 +9,8 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | Id | Phase | State |
 |----|-------|-------|
 | P0 | Scaffold | merged; shell QA tests merged; Month audit fix in flight (`ph/p0-fix-month`) |
-| P1 | HabitatCore | in flight (`ph/p1-core`) |
-| P2 | HabitatData | not started |
+| P1 | HabitatCore | merged (84 tests, 97.8 % coverage) |
+| P2 | HabitatData | in flight (`ph/p2-data`) |
 | P3 | Habit list | not started |
 | P4 | Week view | not started |
 | P5 | Month view | not started |
@@ -21,7 +21,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 ## In flight
 
 - P0 Month contrast fix — branch `ph/p0-fix-month`, worktree `.run/wt/p0fix`, implementer; QA re-verify after.
-- P1 review — fresh reviewer on `ph/p1-core` (8ec3401).
+- P2 — branch `ph/p2-data`, worktree `.run/wt/p2`, implementer sonnet/medium (dispatched 00:01).
 
 ## Open items
 
@@ -55,3 +55,4 @@ at the end.
 - P0: implementer, reviewer (APPROVE, 4 should-fix, all fixed in 13ca58b), merged `--no-ff`, fast gate PASS (23:24).
 - Dispatched P1 and P0 shell QA in parallel at 23:25.
 - P0 shell QA merged (14 UI tests pass on `Habitat-QA`; Month audit bug found, fix dispatched). P1 implemented (97.8 % coverage), in review.
+- P1 reviewed (APPROVE, 12/12 mutants killed), review fixes in 5b3d4aa, merged, fast gate PASS (00:00). P2 dispatched 00:01.
