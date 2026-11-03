@@ -64,7 +64,7 @@ private struct WeekPage: View {
     var body: some View {
         let rows = model.pageRows[offset] ?? []
         Group {
-            if !model.isNear(offset) {
+            if !model.isNear(offset) || model.pageRows[offset] == nil {
                 Color.clear
             } else if rows.isEmpty {
                 ContentUnavailableView(
@@ -94,9 +94,9 @@ private struct WeekPage: View {
                     }
                     .padding(Theme.Spacing.medium)
                 }
-                .background(Color(.systemGroupedBackground))
             }
         }
+        .background(Color(.systemGroupedBackground))
     }
 }
 
