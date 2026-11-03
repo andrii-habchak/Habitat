@@ -51,8 +51,10 @@ struct FeaturePlaceholder: View {
                     Text(tab.title)
                         .font(.title2.bold())
                         .foregroundStyle(.primary)
+                    // Primary, not secondary: inside the combined element a secondary line
+                    // made every tab's contrast audit report "nearly passed".
                     Text("Not built yet.")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary)
                 }
                 .multilineTextAlignment(.center)
                 .accessibilityElement(children: .combine)
