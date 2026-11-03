@@ -15,7 +15,7 @@ struct DaySheet: View {
             List {
                 if habits.isEmpty {
                     Text("No habits were active on this day.")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary)
                 } else {
                     ForEach(habits) { habit in
                         row(habit)
@@ -24,7 +24,7 @@ struct DaySheet: View {
                 if isFuture {
                     Text("Future days cannot be marked.")
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary)
                 }
             }
             .accessibilityIdentifier("month.daySheet")
@@ -32,7 +32,7 @@ struct DaySheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done", action: onClose)
+                    Button("Close", action: onClose)
                         .accessibilityIdentifier("month.daySheet.close")
                 }
             }

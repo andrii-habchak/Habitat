@@ -31,10 +31,11 @@ enum DonutGeometry {
         guard count > 0 else { return [] }
         guard count > 1 else { return [DonutArc(start: 0, end: 1)] }
         let slot = 1.0 / Double(count)
+        let gap = min(gapFraction, slot / 2)
         return (0..<count).map { index in
             DonutArc(
-                start: Double(index) * slot + gapFraction / 2,
-                end: Double(index + 1) * slot - gapFraction / 2
+                start: Double(index) * slot + gap / 2,
+                end: Double(index + 1) * slot - gap / 2
             )
         }
     }
@@ -101,7 +102,7 @@ enum MonthCellBuilder {
 
 /// Localised day names without `Date` arithmetic.
 enum MonthSymbols {
-    private static var calendar: Calendar { Calendar(identifier: .gregorian) }
+    private static let calendar = Calendar(identifier: .gregorian)
 
     static func monthName(_ month: Int) -> String {
         calendar.monthSymbols[month - 1]

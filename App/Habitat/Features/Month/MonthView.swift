@@ -13,6 +13,7 @@ struct MonthView: View {
     @State private var filter: UUID?
     @State private var selectedDay: SelectedDay?
     @State private var errorText: String?
+    @State private var errorTitle = "Could not save"
 
     private static let maxOffset = 120
 
@@ -60,7 +61,7 @@ struct MonthView: View {
             )
             .presentationDetents([.medium, .large])
         }
-        .alert("Could not save", isPresented: Binding(
+        .alert(errorTitle, isPresented: Binding(
             get: { errorText != nil },
             set: { if !$0 { errorText = nil } }
         )) {
@@ -149,7 +150,7 @@ struct MonthView: View {
             }
             .padding(.horizontal, Theme.Spacing.medium)
             .frame(minHeight: Theme.minTapTarget)
-            .foregroundStyle(selected ? Color.primary : Color.secondary)
+            .foregroundStyle(Color.primary)
             .background(
                 Capsule().fill(selected ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.12))
             )
@@ -202,9 +203,10 @@ struct MonthView: View {
         } label: {
             ZStack {
                 DonutView(segments: cell.segments)
+                    .opacity(cell.isInMonth ? 1 : 0.4)
                 Text("\(cell.day.day)")
                     .font(compact ? .caption2 : .caption)
-                    .fontWeight(cell.isToday ? .heavy : .regular)
+                    .fontWeight(cell.isToday ? .heavy : (cell.isInMonth ? .regular : .light))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .foregroundStyle(.primary)
@@ -219,7 +221,6 @@ struct MonthView: View {
                 RoundedRectangle(cornerRadius: Theme.Radius.card)
                     .strokeBorder(cell.isToday ? Color.accentColor : Color.clear, lineWidth: 2)
             )
-            .opacity(cell.isInMonth ? 1 : 0.4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -250,7 +251,11 @@ struct MonthView: View {
             habits = try services.habitRepository().all()
             let completions = try services.completionRepository().completions(from: start, through: end)
             done = Set(completions.map { DoneKey(habitID: $0.habitID, day: $0.day) })
+            if let current = filter, !habits.contains(where: { $0.id == current && !$0.isArchived }) {
+                filter = nil
+            }
         } catch {
+            errorTitle = "Could not load"
             errorText = error.localizedDescription
         }
     }
@@ -261,6 +266,7 @@ struct MonthView: View {
             try services.completionRepository().toggle(habitID: habit.id, day: day)
             reload()
         } catch {
+            errorTitle = "Could not save"
             errorText = error.localizedDescription
         }
     }

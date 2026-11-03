@@ -40,7 +40,7 @@ struct DonutView: View {
                     ForEach(Array(zip(segments, arcs)), id: \.0.id) { segment, arc in
                         DonutArcShape(start: arc.start, end: arc.end, inset: thick / 2)
                             .stroke(
-                                Color(hex: segment.colorHex).opacity(segment.isDone ? 1 : 0.3),
+                                Color(hex: segment.colorHex).opacity(segment.isDone ? 1 : 0.5),
                                 style: StrokeStyle(lineWidth: segment.isDone ? thick : thin)
                             )
                     }
