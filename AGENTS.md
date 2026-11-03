@@ -15,7 +15,7 @@ This file is the entry point for any agent (or human) picking the work up.
 ## Roles
 
 - **Orchestrator** (lead session): controls only. Starts agents, reads their reports, decides,
-  merges lanes, pushes `main`, keeps `docs/STATUS.md` / `docs/NEXT.md` / `docs/DECISIONS.md`
+  merges lanes, pushes `integration`, keeps `docs/STATUS.md` / `docs/NEXT.md` / `docs/DECISIONS.md`
   current. Writes no feature code, tests or UI.
 - **Implementer** (one phase): own worktree + branch `ph/<id>-<slug>`. Writes the code and its
   unit tests, runs the fast gate, commits on its branch. Fixes review findings.
