@@ -10,7 +10,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 |----|-------|-------|
 | P0 | Scaffold | merged, shell QA passed (14 UI tests, audits green) |
 | P1 | HabitatCore | merged (84 tests, 97.8 % coverage) |
-| P2 | HabitatData | implemented (`ph/p2-data`), in review |
+| P2 | HabitatData | merged (131 package tests, HabitatData 90.6 % coverage) |
 | P3 | Habit list | not started |
 | P4 | Week view | not started |
 | P5 | Month view | not started |
@@ -20,10 +20,12 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## In flight
 
-- P2 — branch `ph/p2-data`, worktree `.run/wt/p2`, implemented (131 package tests), fresh reviewer running.
+- Shared wiring (container, theme, ids) — branch `ph/shared-wiring`, worktree `.run/wt/wiring`, before P3/P4 lanes.
 
 ## Open items
 
+- P2 review should-fix, not done: (1) no test forces a failing save, so `context.rollback()` in `DocumentStore.save()` is untested; (2) `DocumentStore.swift:43` export orders habits by sortOrder only, add tie-break (createdDaySerial, id); (3) merge validates a new reminder against the file's stale copy of an existing reminder id (conservative); (4) `UserNotificationScheduler.add` can leave a partial set pending on error, P6 should re-plan on error; (5) `ReminderModel.value` preconditionFailure on corrupt stored time; (6) no test for range queries dropping days before created day.
+- P2 defaults worth the owner's eye: merge keeps the store's record on id conflicts and aborts on the first reminder clash (default 8); general reminder notification body is "Reminder" (default 12).
 - Brief notes for later phases (P1 review): P5 wants a fixed 6-row month grid (`Month.grid` returns 4-6 rows, pad in UI); P2 must filter completions after an archive day for donuts and, on import-merge, validate reminder clashes against the existing store, not only within the file; P2/P6 must replace all pending notification requests on each re-plan.
 - Cleanup: stray untracked `.run/wt/p0fix/App/HabitatUITests/TmpShots.swift` (QA screenshot helper; delete refused by a hook, not on any branch). Delete the worktree by hand.
 - QA could not use the simulator control tool (no access response); it used `xcrun simctl`. Only the Habits tab was screenshotted.
@@ -56,3 +58,4 @@ at the end.
 - P0 shell QA merged (14 UI tests pass on `Habitat-QA`; Month audit bug found, fix dispatched). P1 implemented (97.8 % coverage), in review.
 - P1 reviewed (APPROVE, 12/12 mutants killed), review fixes in 5b3d4aa, merged, fast gate PASS (00:00). P2 dispatched 00:01.
 - Month contrast: fix round 1 regressed all audits, round 2 (primary subtitle, 6592d02) passed `gate.sh full` (14 tests); merged, fast gate PASS (00:10). P2 implemented, in review.
+- P2 reviewed (APPROVE, 13/14 mutants killed), merged, fast gate PASS (00:10). Shared wiring dispatched before P3/P4.
