@@ -8,7 +8,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 | Id | Phase | State |
 |----|-------|-------|
-| P0 | Scaffold | merged to `integration`; shell QA in flight |
+| P0 | Scaffold | merged; shell QA tests merged; Month audit fix in flight (`ph/p0-fix-month`) |
 | P1 | HabitatCore | in flight (`ph/p1-core`) |
 | P2 | HabitatData | not started |
 | P3 | Habit list | not started |
@@ -20,12 +20,13 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## In flight
 
-- P1 — branch `ph/p1-core`, worktree `.run/wt/p1`, implementer opus/high.
-- P0 shell QA — branch `ph/p0-qa`, worktree `.run/wt/p0qa`, QA sonnet/medium (uses Habitat-QA).
+- P0 Month contrast fix — branch `ph/p0-fix-month`, worktree `.run/wt/p0fix`, implementer; QA re-verify after.
+- P1 review — fresh reviewer on `ph/p1-core` (8ec3401).
 
 ## Open items
 
-None.
+- Month tab fails `performAccessibilityAudit()` (contrast on the placeholder text); `testAuditMonth` has an expected-failure wrapper until fixed (QA, c9e0804).
+- QA could not use the simulator control tool (no access response); it used `xcrun simctl`. Only the Habits tab was screenshotted.
 
 ## Decisions for owner
 
@@ -50,3 +51,4 @@ at the end.
 - Committed the owner's pending hand-off/script edits, then dispatched P0.
 - P0: implementer, reviewer (APPROVE, 4 should-fix, all fixed in 13ca58b), merged `--no-ff`, fast gate PASS (23:24).
 - Dispatched P1 and P0 shell QA in parallel at 23:25.
+- P0 shell QA merged (14 UI tests pass on `Habitat-QA`; Month audit bug found, fix dispatched). P1 implemented (97.8 % coverage), in review.
