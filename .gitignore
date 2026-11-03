@@ -1,0 +1,8 @@
+.run/
+.claude/
+build.noindex/
+*.xcodeproj
+DerivedData/
+.build/
+xcuserdata/
+.DS_Store
