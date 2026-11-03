@@ -58,6 +58,7 @@ final class RemindersViewModel {
     }
 
     func delete(_ reminder: Reminder) {
+        errorMessage = nil
         do {
             try services.reminderRepository().delete(id: reminder.id)
         } catch {

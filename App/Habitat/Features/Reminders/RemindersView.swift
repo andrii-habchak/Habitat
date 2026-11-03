@@ -53,6 +53,12 @@ private struct RemindersScreen: View {
                             .accessibilityIdentifier(AccessibilityID.make("reminders", "error"))
                     }
                 }
+                if let message = model.sync.lastErrorMessage {
+                    Section {
+                        ErrorText(message: "Notifications could not be scheduled: \(message)")
+                            .accessibilityIdentifier(AccessibilityID.make("reminders", "syncError"))
+                    }
+                }
                 if model.isEmpty {
                     emptySection
                 } else {
