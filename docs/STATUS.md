@@ -8,9 +8,9 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 | Id | Phase | State |
 |----|-------|-------|
-| P0 | Scaffold | merged; shell QA tests merged; Month audit fix in flight (`ph/p0-fix-month`) |
+| P0 | Scaffold | merged, shell QA passed (14 UI tests, audits green) |
 | P1 | HabitatCore | merged (84 tests, 97.8 % coverage) |
-| P2 | HabitatData | in flight (`ph/p2-data`) |
+| P2 | HabitatData | implemented (`ph/p2-data`), in review |
 | P3 | Habit list | not started |
 | P4 | Week view | not started |
 | P5 | Month view | not started |
@@ -20,13 +20,12 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## In flight
 
-- P0 Month contrast fix — branch `ph/p0-fix-month`, worktree `.run/wt/p0fix`, implementer; QA re-verify after.
-- P2 — branch `ph/p2-data`, worktree `.run/wt/p2`, implementer sonnet/medium (dispatched 00:01).
+- P2 — branch `ph/p2-data`, worktree `.run/wt/p2`, implemented (131 package tests), fresh reviewer running.
 
 ## Open items
 
 - Brief notes for later phases (P1 review): P5 wants a fixed 6-row month grid (`Month.grid` returns 4-6 rows, pad in UI); P2 must filter completions after an archive day for donuts and, on import-merge, validate reminder clashes against the existing store, not only within the file; P2/P6 must replace all pending notification requests on each re-plan.
-- Month tab fails `performAccessibilityAudit()` (contrast on the placeholder text); `testAuditMonth` has an expected-failure wrapper until fixed (QA, c9e0804).
+- Cleanup: stray untracked `.run/wt/p0fix/App/HabitatUITests/TmpShots.swift` (QA screenshot helper; delete refused by a hook, not on any branch). Delete the worktree by hand.
 - QA could not use the simulator control tool (no access response); it used `xcrun simctl`. Only the Habits tab was screenshotted.
 
 ## Decisions for owner
@@ -56,3 +55,4 @@ at the end.
 - Dispatched P1 and P0 shell QA in parallel at 23:25.
 - P0 shell QA merged (14 UI tests pass on `Habitat-QA`; Month audit bug found, fix dispatched). P1 implemented (97.8 % coverage), in review.
 - P1 reviewed (APPROVE, 12/12 mutants killed), review fixes in 5b3d4aa, merged, fast gate PASS (00:00). P2 dispatched 00:01.
+- Month contrast: fix round 1 regressed all audits, round 2 (primary subtitle, 6592d02) passed `gate.sh full` (14 tests); merged, fast gate PASS (00:10). P2 implemented, in review.
