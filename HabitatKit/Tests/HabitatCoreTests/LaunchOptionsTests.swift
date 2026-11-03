@@ -16,7 +16,7 @@ struct LaunchOptionsTests {
             "-today", "2026-11-03", "-fakeNotifications"
         ])
         #expect(options == LaunchOptions(
-            uiTesting: true, seed: "twoHabits", today: "2026-11-03", fakeNotifications: true
+            uiTesting: true, seed: "twoHabits", today: DayKey("2026-11-03"), fakeNotifications: true
         ))
     }
 
@@ -46,13 +46,13 @@ struct LaunchOptionsTests {
         "2026-11-03", "2024-02-29", "2000-02-29", "2026-12-31", "2026-01-01"
     ])
     func validToday(_ value: String) {
-        #expect(LaunchOptions(arguments: ["-today", value]).today == value)
+        #expect(LaunchOptions(arguments: ["-today", value]).today?.text == value)
     }
 
     @Test("A later malformed -today does not reset an earlier valid one")
     func malformedRepeatKeepsValidDay() {
         let options = LaunchOptions(arguments: ["-today", "2026-11-03", "-today", "2026-02-30"])
-        #expect(options.today == "2026-11-03")
+        #expect(options.today == DayKey("2026-11-03"))
     }
 
     @Test("The last occurrence of a repeated option wins")
