@@ -35,7 +35,7 @@ struct LaunchOptionsTests {
     }
 
     @Test("Malformed or impossible days are rejected", arguments: [
-        "2026-02-30", "2025-02-29", "2026-13-01", "2026-00-10", "2026-04-31",
+        "2026-02-30", "2025-02-29", "2100-02-29", "1900-02-29", "2026-13-01", "2026-00-10", "2026-04-31",
         "26-11-03", "2026-1-03", "2026/11/03", "2026-11-03T00:00", "abcd-ef-gh", ""
     ])
     func invalidToday(_ value: String) {
@@ -47,6 +47,12 @@ struct LaunchOptionsTests {
     ])
     func validToday(_ value: String) {
         #expect(LaunchOptions(arguments: ["-today", value]).today == value)
+    }
+
+    @Test("A later malformed -today does not reset an earlier valid one")
+    func malformedRepeatKeepsValidDay() {
+        let options = LaunchOptions(arguments: ["-today", "2026-11-03", "-today", "2026-02-30"])
+        #expect(options.today == "2026-11-03")
     }
 
     @Test("The last occurrence of a repeated option wins")

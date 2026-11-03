@@ -60,7 +60,7 @@ public struct LaunchOptions: Equatable, Sendable {
                 }
             case Self.todayFlag:
                 if let value = Self.value(after: index, in: arguments) {
-                    today = Self.isValidDay(value) ? value : nil
+                    if Self.isValidDay(value) { today = value }
                     index += 1
                 }
             default:

@@ -75,6 +75,7 @@ if [ "$mode" = full ]; then
     fi
     udid="$(tr -d '[:space:]' <"$udid_file")"
   fi
+  mkdir -p "$build/results"
   step "xcodebuild test (XCUITests on $udid)"
   run_logged xcodebuild-test xcodebuild test "${xcodebuild_common[@]}" \
     -destination "id=$udid" \
