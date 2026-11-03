@@ -25,6 +25,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## Open items
 
+- Brief notes for later phases (P1 review): P5 wants a fixed 6-row month grid (`Month.grid` returns 4-6 rows, pad in UI); P2 must filter completions after an archive day for donuts and, on import-merge, validate reminder clashes against the existing store, not only within the file; P2/P6 must replace all pending notification requests on each re-plan.
 - Month tab fails `performAccessibilityAudit()` (contrast on the placeholder text); `testAuditMonth` has an expected-failure wrapper until fixed (QA, c9e0804).
 - QA could not use the simulator control tool (no access response); it used `xcrun simctl`. Only the Habits tab was screenshotted.
 
@@ -39,6 +40,8 @@ Denied actions (permission, classifier, hook) are listed here with the exact com
 | 2 | 2026-11-03 | iOS 17 simulator runtime | not installed | install it in Xcode, run `scripts/gate.sh full` on it |
 | 3 | 2026-11-03 | `.claude/settings.json` (clock guard hook, allowlist) is not in the repo, though NEXT.md says it is committed | not created (PLAN §11: agents never change settings); the clock is enforced by the orchestrator only | commit `.claude/settings.json` with the `deadline-guard.sh` PreToolUse hook before the next run |
 | 4 | 2026-11-03 | P0 implementer's `rm -rf build.noindex Habitat.xcodeproj` (clean rebuild) was refused by a local PreToolUse hook: "target is outside ~/IdeaProjects/b2spin, the Claude scratch area and $TMPDIR" | not retried; gate run incrementally | widen the hook's allowed paths to include this repo, or clean `build.noindex/` by hand |
+| 5 | 2026-11-04 | P1 default: two general reminders at the same time with overlapping weekdays clash even if their labels differ ("Water" and "Stretch" both 08:00 Mon are rejected) | clash regardless of label (literal "no target" reading) | treat the label as the target: change `Reminder.swift` duplicate check, update tests (P6 only) |
+| 6 | 2026-11-04 | P1 default: a weekly habit's creation week counts like any other, so a past creation week with c < N shows red when swiping back | no special case | add a creation-week exemption in `WeeklyStatus` |
 
 ## Run log
 
