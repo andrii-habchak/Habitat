@@ -1,3 +1,5 @@
+import Foundation
+
 /// How often a habit should be done (PLAN §2).
 public enum Goal: Hashable, Sendable {
     /// Every day (7 per week).
@@ -76,4 +78,9 @@ extension Goal: Codable {
             try container.encode(count, forKey: .count)
         }
     }
+}
+
+extension GoalError: LocalizedError {
+    /// Same text as `description`, so `localizedDescription` and alerts show it.
+    public var errorDescription: String? { description }
 }

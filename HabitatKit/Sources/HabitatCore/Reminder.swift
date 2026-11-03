@@ -174,3 +174,8 @@ public enum ReminderError: Error, Equatable, Sendable, CustomStringConvertible {
         }
     }
 }
+
+extension ReminderError: LocalizedError {
+    /// Same text as `description`, so `localizedDescription` and alerts show it.
+    public var errorDescription: String? { description }
+}

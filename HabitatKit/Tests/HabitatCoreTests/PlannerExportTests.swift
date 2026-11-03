@@ -267,3 +267,41 @@ struct ExportTests {
         #expect(ImportError.malformed(path: "habits[0]", reason: "x").description.contains("habits[0]"))
     }
 }
+
+@Suite("Readable errors")
+struct ReadableErrorTests {
+    @Test("R-DATA R-REM R-LIST: localizedDescription shows the readable text")
+    func localizedDescriptions() {
+        let errors: [any Error] = [
+            ImportError.unsupportedSchema(2),
+            HabitError.emptyName,
+            ReminderError.duplicate(of: uuid(1), message: "Clashes with the reminder \"Water\" at 08:00 on Mon."),
+            GoalError.timesPerWeekOutOfRange(8)
+        ]
+        let expected = [
+            "Schema 2 is not supported (this version reads schema 1).",
+            "A habit needs a name.",
+            "Clashes with the reminder \"Water\" at 08:00 on Mon.",
+            "A weekly goal must be between 1 and 7 days, not 8."
+        ]
+        #expect(errors.map(\.localizedDescription) == expected)
+    }
+
+    @Test("R-DATA R-REM: an import with clashing habit reminders names the habit")
+    func importHabitReminderClash() throws {
+        let read = habit(1, created: "2026-10-01", name: "Read")
+        let document = ExportDocument(
+            habits: [read],
+            reminders: [
+                Reminder(id: uuid(101), kind: .habit(read.id), time: time(21, 0), weekdays: [.monday, .tuesday]),
+                Reminder(id: uuid(102), kind: .habit(read.id), time: time(21, 0), weekdays: [.tuesday])
+            ]
+        )
+        let error = ImportError.invalidReminder(
+            index: 1, reason: "Clashes with the reminder for \"Read\" at 21:00 on Mon, Tue."
+        )
+        #expect(throws: error) { try ExportCodec.decode(ExportCodec.encode(document)) }
+        #expect(error.localizedDescription
+                == "Reminder 2 is invalid: Clashes with the reminder for \"Read\" at 21:00 on Mon, Tue.")
+    }
+}

@@ -2,6 +2,10 @@
 ///
 /// Stored as the number of days since 1970-01-01, so arithmetic and comparison never pass
 /// through `Date`, time zones or DST. Text and JSON form is `yyyy-MM-dd`.
+///
+/// Supported years are 0001...9999 (`yearRange`): parsing and `init(year:month:day:)` reject
+/// anything else. `adding(days:)` and `init(serial:)` do not check the range; a result outside
+/// it is out of contract (its `text` is no longer a four-digit `yyyy`).
 public struct DayKey: Hashable, Comparable, Sendable {
     /// Days since 1970-01-01 (negative before it).
     public let serial: Int
@@ -43,6 +47,7 @@ public struct DayKey: Hashable, Comparable, Sendable {
         return Weekday.allCases[offset]
     }
 
+    /// The day `days` later (earlier when negative). Out of contract outside `yearRange`.
     public func adding(days: Int) -> DayKey {
         DayKey(serial: serial + days)
     }

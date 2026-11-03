@@ -160,3 +160,8 @@ public enum ImportError: Error, Equatable, Sendable, CustomStringConvertible {
         }
     }
 }
+
+extension ImportError: LocalizedError {
+    /// Same text as `description`, so `localizedDescription` and alerts show it.
+    public var errorDescription: String? { description }
+}

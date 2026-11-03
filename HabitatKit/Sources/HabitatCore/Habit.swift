@@ -110,3 +110,8 @@ public enum HabitError: Error, Equatable, Sendable, CustomStringConvertible {
         }
     }
 }
+
+extension HabitError: LocalizedError {
+    /// Same text as `description`, so `localizedDescription` and alerts show it.
+    public var errorDescription: String? { description }
+}
