@@ -27,6 +27,28 @@ struct HabitsView: View {
             if model == nil { model = HabitsViewModel(services: services) }
             model?.load()
         }
+        .confirmationDialog(
+            "Archive this habit?",
+            isPresented: Binding(get: { pendingArchive != nil }, set: { if !$0 { pendingArchive = nil } }),
+            titleVisibility: .visible,
+            presenting: pendingArchive
+        ) { row in
+            Button("Archive \(row.habit.name)", role: .destructive) {
+                model?.archive(id: row.id)
+            }
+            .accessibilityIdentifier(AccessibilityID.make("habits", "archiveConfirm"))
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("It leaves the list; its history is kept and you can unarchive it later.")
+        }
+        .alert(
+            "Something went wrong",
+            isPresented: Binding(get: { model?.errorMessage != nil }, set: { if !$0 { model?.errorMessage = nil } })
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(model?.errorMessage ?? "")
+        }
         .sheet(item: $editor, onDismiss: { model?.load() }, content: { HabitEditorView(model: $0) })
     }
 
@@ -72,28 +94,6 @@ struct HabitsView: View {
             if !model.archived.isEmpty { archivedSection(model) }
         }
         .accessibilityIdentifier(AccessibilityID.make("habits", "list"))
-        .confirmationDialog(
-            "Archive this habit?",
-            isPresented: Binding(get: { pendingArchive != nil }, set: { if !$0 { pendingArchive = nil } }),
-            titleVisibility: .visible,
-            presenting: pendingArchive
-        ) { row in
-            Button("Archive \(row.habit.name)", role: .destructive) {
-                model.archive(id: row.id)
-            }
-            .accessibilityIdentifier(AccessibilityID.make("habits", "archiveConfirm"))
-            Button("Cancel", role: .cancel) {}
-        } message: { _ in
-            Text("It leaves the list; its history is kept and you can unarchive it later.")
-        }
-        .alert(
-            "Something went wrong",
-            isPresented: Binding(get: { model.errorMessage != nil }, set: { if !$0 { model.errorMessage = nil } })
-        ) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(model.errorMessage ?? "")
-        }
     }
 
     private func archivedSection(_ model: HabitsViewModel) -> some View {
@@ -128,7 +128,7 @@ struct HabitsView: View {
             name: habit.name, goal: habit.goal, streak: row.streak, archived: archived
         )
         Button {
-            editor = HabitEditorModel(services: services, editing: habit)
+            if !archived { editor = HabitEditorModel(services: services, editing: habit) }
         } label: {
             HStack(spacing: Theme.Spacing.medium) {
                 Circle()
@@ -147,7 +147,7 @@ struct HabitsView: View {
                 HStack(spacing: Theme.Spacing.extraSmall) {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(row.streak > 0 ? Theme.Status.inProgress : Color.secondary)
-                    Text("\(row.streak)")
+                    Text(HabitFormat.shortStreak(row.streak, goal: habit.goal))
                         .font(.body.monospacedDigit())
                         .foregroundStyle(.primary)
                 }
@@ -159,7 +159,7 @@ struct HabitsView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-        .accessibilityHint(String(localized: "Opens the editor"))
+        .accessibilityHint(archived ? "" : String(localized: "Opens the editor"))
         .accessibilityIdentifier(AccessibilityID.make("habits", "row", habit.id.uuidString))
     }
 

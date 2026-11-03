@@ -39,6 +39,10 @@ final class HabitEditorModel {
         goalKind == .daily ? .daily : .timesPerWeek(weeklyCount)
     }
 
+    func clearError() {
+        errorMessage = nil
+    }
+
     /// Saves the habit; `false` leaves the message in `errorMessage`.
     func save() -> Bool {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)

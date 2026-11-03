@@ -40,6 +40,7 @@ struct HabitEditorView: View {
             TextField("Name", text: $model.name)
                 .textInputAutocapitalization(.sentences)
                 .submitLabel(.done)
+                .onChange(of: model.name) { model.clearError() }
                 .accessibilityIdentifier(AccessibilityID.make("habits", "editor.name"))
             if let message = model.errorMessage {
                 Label(message, systemImage: "exclamationmark.triangle.fill")
@@ -75,6 +76,8 @@ struct HabitEditorView: View {
                         Image(systemName: "checkmark")
                             .font(.headline)
                             .foregroundStyle(.white)
+                            .shadow(color: .black, radius: 1)
+                            .shadow(color: .black, radius: 1)
                     }
                 }
                 .frame(minWidth: Theme.minTapTarget, minHeight: Theme.minTapTarget)

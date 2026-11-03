@@ -23,6 +23,14 @@ enum HabitFormat {
         }
     }
 
+    /// Short row caption: "3 d" for daily, "3 wk" for weekly habits.
+    static func shortStreak(_ streak: Int, goal: Goal) -> String {
+        switch goal {
+        case .daily: String(localized: "\(streak) d")
+        case .timesPerWeek: String(localized: "\(streak) wk")
+        }
+    }
+
     /// VoiceOver label: name, goal and streak.
     static func accessibilityLabel(name: String, goal: Goal, streak: Int, archived: Bool) -> String {
         var parts = [name, goalText(goal), streakText(streak, goal: goal)]
