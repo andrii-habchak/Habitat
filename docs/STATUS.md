@@ -15,13 +15,14 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | P4 | Week view | merged (QA pending) |
 | P5 | Month view | merged (QA pending) |
 | P6 | Reminders | merged (QA pending) |
-| P7 | Settings, export/import, polish | not started |
+| P7 | Settings, export/import, polish | reduced scope in flight (`ph/p7-settings`) |
 | S2 | Widget (stage 2) | not started |
 
 ## In flight
 
 - QA for P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34` (dispatched 00:27).
-- Re-plan hooks — `ph/replan-hooks`, worktree `.run/wt/hooks`, one-line `reminderSync?.replan()` calls in Habits/Week/Month (00:33). P7 will not fit the clock (55 + 25 min) and is not started.
+- P7 (reduced: Settings, export/import UI, row polish; no icon) — `ph/p7-settings`, worktree `.run/wt/p7`, sonnet/medium, 25 min cap (00:35; started with MIN_LEFT 84 >= 55 + 25 = 80).
+- QA P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34`.
 
 ## Open items
 
@@ -74,3 +75,4 @@ at the end.
 - P4 reviewed twice (page order and per-page ids fixed), merged, fast gate PASS (00:26). QA P3+P4 dispatched 00:27.
 - P5 reviewed (3 contrast must-fix, fixed in 635de46), merged, fast gate PASS (00:27).
 - P6 reviewed (APPROVE, 5 should-fix), merged, fast gate PASS (00:32).
+- Re-plan hooks (Habits/Week/Month call `reminderSync?.replan()` after successful changes) merged, fast gate PASS (00:34). P7 started in reduced scope (00:35).
