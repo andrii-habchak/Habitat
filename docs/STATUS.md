@@ -11,17 +11,17 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | P0 | Scaffold | merged, shell QA passed (14 UI tests, audits green) |
 | P1 | HabitatCore | merged (84 tests, 97.8 % coverage) |
 | P2 | HabitatData | merged (131 package tests, HabitatData 90.6 % coverage) |
-| P3 | Habit list | in flight (`ph/p3-habits`) |
-| P4 | Week view | in flight (`ph/p4-week`) |
-| P5 | Month view | not started |
+| P3 | Habit list | implemented (`ph/p3-habits`), in review |
+| P4 | Week view | implemented (`ph/p4-week`), in review |
+| P5 | Month view | in flight (`ph/p5-month`) |
 | P6 | Reminders | not started |
 | P7 | Settings, export/import, polish | not started |
 | S2 | Widget (stage 2) | not started |
 
 ## In flight
 
-- P3 — `ph/p3-habits`, worktree `.run/wt/p3`, sonnet/medium (dispatched 00:17).
-- P4 — `ph/p4-week`, worktree `.run/wt/p4`, sonnet/medium (dispatched 00:17).
+- P3 `ph/p3-habits` (c37802d) and P4 `ph/p4-week` (12d4fd8): fresh reviewers running (00:19).
+- P5 — `ph/p5-month`, worktree `.run/wt/p5`, sonnet/medium (dispatched 00:20, cut from integration before P3/P4 merge; Month folder only).
 
 ## Open items
 
@@ -61,3 +61,4 @@ at the end.
 - Month contrast: fix round 1 regressed all audits, round 2 (primary subtitle, 6592d02) passed `gate.sh full` (14 tests); merged, fast gate PASS (00:10). P2 implemented, in review.
 - P2 reviewed (APPROVE, 13/14 mutants killed), merged, fast gate PASS (00:10). Shared wiring dispatched before P3/P4.
 - Shared wiring (AppServices, Theme, container) merged, fast gate PASS (00:15). P3 and P4 dispatched in parallel at 00:17.
+- P3 and P4 implemented (gate PASS each), reviewers dispatched 00:19. P5 started 00:20 in parallel (needs only P2).
