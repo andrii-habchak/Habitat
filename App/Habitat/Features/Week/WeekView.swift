@@ -20,12 +20,13 @@ private struct WeekScreen: View {
     var body: some View {
         NavigationStack {
             TabView(selection: $model.weekOffset) {
-                ForEach((-WeekViewModel.maxWeeksBack...0).reversed(), id: \.self) { offset in
+                ForEach(-WeekViewModel.maxWeeksBack...0, id: \.self) { offset in
                     WeekPage(model: model, week: model.week(offset: offset), offset: offset)
                         .tag(offset)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .accessibilityIdentifier(AccessibilityID.make("week", "screen"))
             .navigationTitle(WeekFormat.rangeTitle(model.week(offset: model.weekOffset)))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -49,8 +50,7 @@ private struct WeekScreen: View {
                 }
             }
         }
-        .accessibilityIdentifier(AccessibilityID.make("week", "screen"))
-        .onAppear { model.refresh() }
+        .onAppear { model.reload() }
     }
 }
 
@@ -62,15 +62,19 @@ private struct WeekPage: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        let rows = model.rows(for: week)
+        let rows = model.pageRows[offset] ?? []
         Group {
-            if rows.isEmpty {
+            if !model.isNear(offset) {
+                Color.clear
+            } else if rows.isEmpty {
                 ContentUnavailableView(
-                    "No habits yet",
+                    offset < 0 ? "No habits this week" : "No habits yet",
                     systemImage: "checklist",
-                    description: Text("Add a habit in the Habits tab and it shows up here.")
+                    description: Text(offset < 0
+                        ? "None of your habits existed in this week."
+                        : "Add a habit in the Habits tab and it shows up here.")
                 )
-                .accessibilityIdentifier(AccessibilityID.make("week", "emptyState"))
+                .accessibilityIdentifier(AccessibilityID.make("week", "emptyState", week.start.text))
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
@@ -90,6 +94,7 @@ private struct WeekPage: View {
                     }
                     .padding(Theme.Spacing.medium)
                 }
+                .background(Color(.systemGroupedBackground))
             }
         }
     }
@@ -118,6 +123,7 @@ private struct WeekdayHeader: View {
                 .accessibilityLabel(WeekFormat.spokenDay(day) + (day == today ? ", today" : ""))
             }
         }
+        .padding(.horizontal, Theme.Spacing.medium)
     }
 }
 
@@ -128,11 +134,9 @@ private struct HabitCard: View {
     let compact: Bool
     let onToggle: (DayKey) -> Void
 
-    private var habitID: String { row.habit.id.uuidString }
-
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.small) {
-            HabitHeader(row: row)
+            HabitHeader(row: row, week: week)
             if compact {
                 HStack(spacing: 0) {
                     ForEach(row.cells) { cell in
@@ -161,8 +165,9 @@ private struct HabitCard: View {
 
 private struct HabitHeader: View {
     let row: HabitWeekRow
+    let week: Week
 
-    private var habitID: String { row.habit.id.uuidString }
+    private var habitID: String { "\(row.habit.id.uuidString).\(week.start.text)" }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
@@ -252,7 +257,9 @@ private struct DayToggle: View {
         }
         .buttonStyle(.plain)
         .disabled(!cell.isEnabled)
-        .accessibilityLabel("\(row.habit.name), \(WeekFormat.spokenDay(cell.day))")
+        .accessibilityLabel(
+            "\(row.habit.name), \(WeekFormat.spokenDay(cell.day))" + (cell.day == today ? ", today" : "")
+        )
         .accessibilityValue(cell.isDone ? "done" : "not done")
         .accessibilityAddTraits(.isToggle)
         .accessibilityIdentifier(AccessibilityID.make("week", "cell", "\(row.habit.id.uuidString).\(cell.day.text)"))

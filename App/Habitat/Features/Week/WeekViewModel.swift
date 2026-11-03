@@ -57,16 +57,19 @@ extension WeeklyStatus {
     }
 }
 
-/// Loads and toggles the week grid. `revision` is bumped after every change so views re-read.
+/// Loads and toggles the week grid. Rows are loaded for the visible week and its neighbours.
 @MainActor
 @Observable
 final class WeekViewModel {
     /// 0 = the week of today, -1 = last week, ...
-    var weekOffset = 0
+    var weekOffset = 0 {
+        didSet { reload() }
+    }
     /// How many weeks back can be reached.
     static let maxWeeksBack = 104
 
-    private(set) var revision = 0
+    /// Rows per week offset, for the visible week and the pages next to it.
+    private(set) var pageRows: [Int: [HabitWeekRow]] = [:]
     private(set) var errorMessage: String?
 
     private let services: AppServices
@@ -87,27 +90,35 @@ final class WeekViewModel {
     func goPrevious() { if canGoPrevious { weekOffset -= 1 } }
     func goNext() { if canGoNext { weekOffset += 1 } }
 
-    func refresh() { revision += 1 }
+    /// Pages within one week of the visible one are rendered.
+    func isNear(_ offset: Int) -> Bool { abs(offset - weekOffset) <= 1 }
 
-    /// Rows for `week`: habits whose lifetime touches the week, in list order.
-    func rows(for week: Week) -> [HabitWeekRow] {
-        _ = revision
+    /// Re-reads the rows of the visible week and its neighbours.
+    func reload() {
         do {
-            let completions = services.completionRepository()
-            return try services.habitRepository().all()
-                .filter { $0.createdDay <= week.end && ($0.archivedDay.map { $0 >= week.start } ?? true) }
-                .map { habit in
-                    HabitWeekRow.make(
-                        habit: habit,
-                        week: week,
-                        doneDays: try completions.doneDays(habitID: habit.id),
-                        today: today
-                    )
-                }
+            var loaded: [Int: [HabitWeekRow]] = [:]
+            for offset in (weekOffset - 1)...(weekOffset + 1) where offset <= 0 {
+                loaded[offset] = try rows(for: week(offset: offset))
+            }
+            pageRows = loaded
         } catch {
             errorMessage = error.localizedDescription
-            return []
         }
+    }
+
+    /// Rows for `week`: habits whose lifetime touches the week, in list order.
+    private func rows(for week: Week) throws -> [HabitWeekRow] {
+        let completions = services.completionRepository()
+        return try services.habitRepository().all()
+            .filter { $0.createdDay <= week.end && ($0.archivedDay.map { $0 >= week.start } ?? true) }
+            .map { habit in
+                HabitWeekRow.make(
+                    habit: habit,
+                    week: week,
+                    doneDays: try completions.doneDays(habitID: habit.id),
+                    today: today
+                )
+            }
     }
 
     func toggle(habitID: UUID, day: DayKey) {
@@ -117,6 +128,6 @@ final class WeekViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
-        refresh()
+        reload()
     }
 }
