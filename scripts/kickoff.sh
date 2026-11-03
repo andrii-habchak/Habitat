@@ -55,28 +55,11 @@ fi
 echo "$udid" > .run/sim-udid
 ok "QA simulator Habitat-QA $udid"
 
-# 5. Local-only agent settings: clock guard hook + allowlist (git-ignored)
-mkdir -p .claude
-cat > .claude/settings.local.json <<JSON
-{
-  "hooks": {
-    "PreToolUse": [
-      { "matcher": "Agent|SendMessage",
-        "hooks": [ { "type": "command", "command": "$root/scripts/deadline-guard.sh" } ] }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(scripts/*)", "Bash(./scripts/*)", "Bash(git:*)", "Bash(swift:*)", "Bash(swiftlint:*)",
-      "Bash(xcodegen:*)", "Bash(xcodebuild:*)", "Bash(xcrun simctl:*)", "Bash(date:*)"
-    ]
-  }
-}
-JSON
-for line in '.run/' '.claude/' 'build.noindex/' '*.xcodeproj' 'DerivedData/' '.DS_Store'; do
-  grep -qxF "$line" .gitignore 2>/dev/null || echo "$line" >> .gitignore
-done
-ok "guard hook + local permissions written (git-ignored)"
+# 5. The clock guard hook and allowlist live in the committed .claude/settings.json (this script
+#    never writes agent settings). Verify they are there.
+jq -e '.hooks.PreToolUse[]? | select(.hooks[]?.command | test("deadline-guard"))' .claude/settings.json >/dev/null 2>&1 \
+  && ok "clock guard hook is configured in .claude/settings.json" \
+  || echo "! clock guard hook missing from .claude/settings.json: the deadline is enforced by the orchestrator only"
 
 # 6. Keep the Mac awake until the deadline; notify at FREEZE (T-19) and STOP (T-4)
 secs=$((deadline - now))

@@ -1,8 +1,14 @@
 # Hand-off: continue as orchestrator
 
-`scripts/kickoff.sh "YYYY-MM-DD HH:MM"` runs the preflight, sets the run clock and prints the
-prompt below (also copied to the clipboard). Start a new agent session **in this repository's
-folder** and paste it. It is self-contained: the agent rebuilds context from the docs.
+Start a new agent session **in this repository's folder** and send it one line:
+
+> You are the orchestrator of Habitat. Run `scripts/kickoff.sh "YYYY-MM-DD HH:MM"` (Paris time
+> deadline), read what it prints, and follow it.
+
+`scripts/kickoff.sh` runs the preflight, sets the run clock, creates the QA simulator and prints
+the prompt below with the deadline filled in (also copied to the clipboard). The prompt is
+self-contained: the agent rebuilds context from the docs. The clock guard hook and the command
+allowlist are in the committed `.claude/settings.json`; the script never edits agent settings.
 
 ---
 
