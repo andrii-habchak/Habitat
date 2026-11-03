@@ -11,7 +11,7 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 | P0 | Scaffold | merged, shell QA passed (14 UI tests, audits green) |
 | P1 | HabitatCore | merged (84 tests, 97.8 % coverage) |
 | P2 | HabitatData | merged (131 package tests, HabitatData 90.6 % coverage) |
-| P3 | Habit list | implemented (`ph/p3-habits`), in review |
+| P3 | Habit list | merged (QA pending) |
 | P4 | Week view | implemented (`ph/p4-week`), in review |
 | P5 | Month view | implemented (`ph/p5-month`), in review |
 | P6 | Reminders | in flight (`ph/p6-reminders`) |
@@ -20,12 +20,15 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## In flight
 
-- P3 `ph/p3-habits` (c37802d) and P4 `ph/p4-week` (12d4fd8): fresh reviewers running (00:19).
+- P4 `ph/p4-week`: review fixes in progress (2 must-fix: page order, per-page ids).
 - P5 `ph/p5-month` (d72f9a4): reviewer running (00:22).
 - P6 — `ph/p6-reminders`, worktree `.run/wt/p6`, opus/high (dispatched 00:23; edits Features/Reminders and minimally HabitatApp.swift). P7 will not fit the clock (55 + 25 min) and is not started.
 
 ## Open items
 
+- `gate.sh full` is red on `integration` until QA updates the shell UI tests from `<tab>.placeholder` to the real screen ids (`habits.screen` already merged; week/month/reminders follow). Fast gate is green.
+- No app unit-test target (needs `project.yml` change): view models and pure builders (HabitWeekRow.make, MonthCellBuilder, DonutGeometry, HabitFormat) are untested outside QA XCUITests.
+- P3 reviewer notes not done: row layout at AX3+ sizes is not adapted (long names squeeze the streak counter).
 - P2 review should-fix, not done: (1) no test forces a failing save, so `context.rollback()` in `DocumentStore.save()` is untested; (2) `DocumentStore.swift:43` export orders habits by sortOrder only, add tie-break (createdDaySerial, id); (3) merge validates a new reminder against the file's stale copy of an existing reminder id (conservative); (4) `UserNotificationScheduler.add` can leave a partial set pending on error, P6 should re-plan on error; (5) `ReminderModel.value` preconditionFailure on corrupt stored time; (6) no test for range queries dropping days before created day.
 - P2 defaults worth the owner's eye: merge keeps the store's record on id conflicts and aborts on the first reminder clash (default 8); general reminder notification body is "Reminder" (default 12).
 - Brief notes for later phases (P1 review): P5 wants a fixed 6-row month grid (`Month.grid` returns 4-6 rows, pad in UI); P2 must filter completions after an archive day for donuts and, on import-merge, validate reminder clashes against the existing store, not only within the file; P2/P6 must replace all pending notification requests on each re-plan.
@@ -64,3 +67,4 @@ at the end.
 - Shared wiring (AppServices, Theme, container) merged, fast gate PASS (00:15). P3 and P4 dispatched in parallel at 00:17.
 - P3 and P4 implemented (gate PASS each), reviewers dispatched 00:19. P5 started 00:20 in parallel (needs only P2).
 - P5 implemented (gate PASS), reviewer dispatched 00:22. P6 dispatched 00:23 (needs only P2/P3-shaped data; P3 not required for the Reminders folder).
+- P3 reviewed (ids convention resolved by amending docs/accessibility-ids.md; 5 fixes in 830157d), merged, fast gate PASS (00:24).
