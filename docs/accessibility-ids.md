@@ -28,6 +28,13 @@ Examples:
 
 Rules:
 
+- Nested elements may carry a dotted sub-path in `element` (`habits.editor.name`,
+  `month.daySheet.toggle.<habitId>`, `reminders.editor.weekday.1`). The identifiers of each
+  screen are listed in `docs/status/<phase>.md` (p3 Habits, p4 Week, p5 Month, p6 Reminders);
+  those lists are the contract QA writes tests against (the `habitEditor.*` / `addButton` names
+  above are the original proposal and are superseded by them). `confirmationDialog` buttons do
+  not reliably keep identifiers: find them by label.
+
 - Identifiers are stable, never localised and never shown to the user. Labels (what VoiceOver
   reads) are separate and must be set too (R-A11Y).
 - State that tests check (done / not done, weekly status, donut segments) goes in the
