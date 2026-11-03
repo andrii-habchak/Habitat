@@ -112,21 +112,16 @@ final class TabShellTests: XCTestCase {
 
     /// R-A11Y: `performAccessibilityAudit()` on each main screen, one test per tab so a failure
     /// names the tab.
-    private func audit(_ label: String, screen: String, knownContrastIssue: Bool = false) throws {
+    private func audit(_ label: String, screen: String) throws {
         let app = launch()
         app.tabBars.buttons[label].tap()
         XCTAssertTrue(placeholder(app, screen).waitForExistence(timeout: 5))
-        if knownContrastIssue {
-            // QA finding (see docs/status/p0-qa.md): "Month" placeholder text fails the contrast
-            // audit. Non-strict so the test passes once the app is fixed.
-            XCTExpectFailure("Month placeholder contrast", strict: false)
-        }
         try app.performAccessibilityAudit()
     }
 
     @MainActor func testAuditHabits() throws { try audit("Habits", screen: "habits") }
     @MainActor func testAuditWeek() throws { try audit("Week", screen: "week") }
-    @MainActor func testAuditMonth() throws { try audit("Month", screen: "month", knownContrastIssue: true) }
+    @MainActor func testAuditMonth() throws { try audit("Month", screen: "month") }
     @MainActor func testAuditReminders() throws { try audit("Reminders", screen: "reminders") }
     @MainActor func testAuditSettings() throws { try audit("Settings", screen: "settings") }
 }
