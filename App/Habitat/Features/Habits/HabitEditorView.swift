@@ -4,6 +4,7 @@ import SwiftUI
 /// Sheet for adding or editing a habit (R-LIST).
 struct HabitEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.reminderSync) private var reminderSync
     @State private var model: HabitEditorModel
 
     init(model: HabitEditorModel) {
@@ -26,7 +27,10 @@ struct HabitEditorView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        if model.save() { dismiss() }
+                        if model.save() {
+                            reminderSync?.replan()
+                            dismiss()
+                        }
                     }
                     .accessibilityIdentifier(AccessibilityID.make("habits", "editor.save"))
                 }

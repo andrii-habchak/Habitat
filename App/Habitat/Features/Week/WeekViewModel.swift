@@ -121,13 +121,18 @@ final class WeekViewModel {
             }
     }
 
-    func toggle(habitID: UUID, day: DayKey) {
+    /// Returns whether the toggle was stored.
+    @discardableResult
+    func toggle(habitID: UUID, day: DayKey) -> Bool {
+        var stored = false
         do {
             try services.completionRepository().toggle(habitID: habitID, day: day)
             errorMessage = nil
+            stored = true
         } catch {
             errorMessage = error.localizedDescription
         }
         reload()
+        return stored
     }
 }

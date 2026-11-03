@@ -4,6 +4,7 @@ import SwiftUI
 /// Month screen (R-MONTH): Monday-first grid of donuts, habit filter, day sheet.
 struct MonthView: View {
     @Environment(\.services) private var services
+    @Environment(\.reminderSync) private var reminderSync
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// Months from today's month; limited to +-10 years.
@@ -265,6 +266,7 @@ struct MonthView: View {
         do {
             try services.completionRepository().toggle(habitID: habit.id, day: day)
             reload()
+            reminderSync?.replan()
         } catch {
             errorTitle = "Could not save"
             errorText = error.localizedDescription
