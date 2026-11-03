@@ -188,12 +188,16 @@ private struct RemindersScreen: View {
 
 private struct ReminderRowView: View {
     let row: ReminderRow
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
             Text(row.title)
                 .font(.body)
-            HStack(spacing: Theme.Spacing.small) {
+            let layout = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.extraSmall))
+                : AnyLayout(HStackLayout(spacing: Theme.Spacing.small))
+            layout {
                 Text(row.timeText)
                     .font(.subheadline.monospacedDigit())
                 Text(row.daysText)

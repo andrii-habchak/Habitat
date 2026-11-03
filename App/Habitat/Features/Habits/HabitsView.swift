@@ -5,6 +5,7 @@ import SwiftUI
 struct HabitsView: View {
     @Environment(\.services) private var services
     @Environment(\.reminderSync) private var reminderSync
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var model: HabitsViewModel?
     @State private var editor: HabitEditorModel?
     @State private var pendingArchive: HabitsViewModel.Row?
@@ -131,21 +132,12 @@ struct HabitsView: View {
         Button {
             if !archived { editor = HabitEditorModel(services: services, editing: habit) }
         } label: {
-            HStack(spacing: Theme.Spacing.medium) {
+            HStack(alignment: typeSize.isAccessibilitySize ? .top : .center, spacing: Theme.Spacing.medium) {
                 Circle()
                     .fill(Color(hex: habit.colorHex))
                     .frame(width: Theme.Spacing.medium, height: Theme.Spacing.medium)
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
-                    Text(habit.name)
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text(HabitFormat.goalText(habit.goal))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer(minLength: Theme.Spacing.small)
-                HStack(spacing: Theme.Spacing.extraSmall) {
+                let streakView = HStack(spacing: Theme.Spacing.extraSmall) {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(row.streak > 0 ? Theme.Status.inProgress : Color.secondary)
                     Text(HabitFormat.shortStreak(row.streak, goal: habit.goal))
@@ -153,6 +145,25 @@ struct HabitsView: View {
                         .foregroundStyle(.primary)
                 }
                 .accessibilityHidden(true)
+                let nameGoal = VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
+                    Text(habit.name)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                    Text(HabitFormat.goalText(habit.goal))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                if typeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
+                        nameGoal
+                        streakView
+                    }
+                    Spacer(minLength: 0)
+                } else {
+                    nameGoal
+                    Spacer(minLength: Theme.Spacing.small)
+                    streakView
+                }
             }
             .frame(minHeight: Theme.minTapTarget)
             .contentShape(Rectangle())
