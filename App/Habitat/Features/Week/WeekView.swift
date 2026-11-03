@@ -60,6 +60,7 @@ private struct WeekPage: View {
     let offset: Int
 
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.reminderSync) private var reminderSync
 
     var body: some View {
         let rows = model.pageRows[offset] ?? []
@@ -88,7 +89,9 @@ private struct WeekPage: View {
                                 today: model.today,
                                 compact: !typeSize.isAccessibilitySize
                             ) { day in
-                                model.toggle(habitID: row.habit.id, day: day)
+                                if model.toggle(habitID: row.habit.id, day: day) {
+                                    reminderSync?.replan()
+                                }
                             }
                         }
                     }

@@ -35,28 +35,35 @@ final class HabitsViewModel {
         }
     }
 
-    func archive(id: UUID) {
+    @discardableResult
+    func archive(id: UUID) -> Bool {
         perform { _ = try habits.archive(id: id) }
     }
 
-    func unarchive(id: UUID) {
+    @discardableResult
+    func unarchive(id: UUID) -> Bool {
         perform { _ = try habits.unarchive(id: id) }
     }
 
     /// `onMove` offsets within the active list.
-    func move(from source: IndexSet, to destination: Int) {
+    @discardableResult
+    func move(from source: IndexSet, to destination: Int) -> Bool {
         var ids = active.map(\.id)
         ids.move(fromOffsets: source, toOffset: destination)
-        perform { try habits.reorder(ids) }
+        return perform { try habits.reorder(ids) }
     }
 
-    private func perform(_ change: () throws -> Void) {
+    /// Returns whether the change was stored.
+    private func perform(_ change: () throws -> Void) -> Bool {
+        var stored = false
         do {
             try change()
+            stored = true
         } catch {
             errorMessage = error.localizedDescription
         }
         load()
+        return stored
     }
 
     private func row(_ habit: Habit) throws -> Row {

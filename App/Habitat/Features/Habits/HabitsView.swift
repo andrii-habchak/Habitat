@@ -4,6 +4,7 @@ import SwiftUI
 /// Habits screen (R-LIST, R-STREAK on the list): add, edit, archive, reorder.
 struct HabitsView: View {
     @Environment(\.services) private var services
+    @Environment(\.reminderSync) private var reminderSync
     @State private var model: HabitsViewModel?
     @State private var editor: HabitEditorModel?
     @State private var pendingArchive: HabitsViewModel.Row?
@@ -34,7 +35,7 @@ struct HabitsView: View {
             presenting: pendingArchive
         ) { row in
             Button("Archive \(row.habit.name)", role: .destructive) {
-                model?.archive(id: row.id)
+                if model?.archive(id: row.id) == true { reminderSync?.replan() }
             }
             .accessibilityIdentifier(AccessibilityID.make("habits", "archiveConfirm"))
             Button("Cancel", role: .cancel) {}
@@ -89,7 +90,7 @@ struct HabitsView: View {
                             .accessibilityIdentifier(AccessibilityID.make("habits", "archive", row.id.uuidString))
                         }
                 }
-                .onMove { model.move(from: $0, to: $1) }
+                .onMove { if model.move(from: $0, to: $1) { reminderSync?.replan() } }
             }
             if !model.archived.isEmpty { archivedSection(model) }
         }
@@ -105,7 +106,7 @@ struct HabitsView: View {
                     habitRow(row, archived: true)
                         .swipeActions(edge: .trailing) {
                             Button {
-                                model.unarchive(id: row.id)
+                                if model.unarchive(id: row.id) { reminderSync?.replan() }
                             } label: {
                                 Label("Unarchive", systemImage: "tray.and.arrow.up")
                             }
