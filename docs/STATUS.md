@@ -2,7 +2,7 @@
 
 ## Now
 
-Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold) dispatched.
+Run 1 ended (STOP, 2026-11-04 02:00). P0-P7 are merged on `integration` (fast gate green). QA of P3+P4 is parked on `ph/qa-p3p4`, not merged. QA of Month, Reminders and Settings has not run.
 
 ## Phases
 
@@ -20,10 +20,12 @@ Run 1 in progress on branch `integration`. Planning docs committed; P0 (scaffold
 
 ## In flight
 
-- QA for P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34` (dispatched 00:27).
-- QA P3+P4 — `ph/qa-p3p4`, worktree `.run/wt/qa34`.
+- Nothing running. QA P3+P4 finished: `ph/qa-p3p4` (f02757e, 0ce89ab) pushed, NOT merged (it was cut before the hooks/P5/P6/P7 merges, only touches App/HabitatUITests and docs/status/qa-p3p4.md). `gate.sh full` passed on that branch: 39 tests, 4 wrapped in non-strict XCTExpectFailure for the audit bugs below. No screenshot pass was done.
 
 ## Open items
+
+- QA P3+P4 bugs (details in `docs/status/qa-p3p4.md`, branch `ph/qa-p3p4`): (1) Habits list audit "Contrast nearly passed"; (2) habit editor audit "Dynamic Type font sizes partially unsupported"; (3) Week with data audit "Hit area is too small"; (4) Habits empty state audit "Contrast nearly passed"; (5) `-seed <unknown>` crashes the app (test arg only); (6) `habits.empty.add` id not exposed; (7) `habits.showArchived` id on the whole row, tap centre does not toggle; (8) archive confirmation has no Cancel button, name field autocorrect altered input ("StretchI'm"); remove the XCTExpectFailure wrappers once fixed.
+- Next run: merge `ph/qa-p3p4` into `integration` (resolve in App/HabitatUITests only), then QA round for Month, Reminders, Settings that also updates the shell tests (`month.screen`, `reminders.screen`, `settings.screen`), then fix bugs, then `gate.sh full`.
 
 - P6 review should-fix, not done: (1) `RemindersView.swift:14` fallback ReminderSync allocated per body evaluation (previews only); (2) reminder row time/days HStack should stack at accessibility sizes; (3) `ReminderSync.markDone` refused-toggle error is cleared immediately (dead branch); (4) no unit tests for MarkDoneTarget/RemindersViewModel.sections/ReminderFormat (needs a test target or moving to HabitatKit: P7); (5) `reminders.editor.habit` id used for both picker and the "No active habits" text.
 - `-fakeNotifications` always reports authorized, so UI tests cannot reach the denied-permission banner (needs a LaunchOptions/HabitatKit change).
@@ -76,3 +78,4 @@ at the end.
 - P6 reviewed (APPROVE, 5 should-fix), merged, fast gate PASS (00:32).
 - Re-plan hooks (Habits/Week/Month call `reminderSync?.replan()` after successful changes) merged, fast gate PASS (00:34). P7 started in reduced scope (00:35).
 - P7 (reduced) reviewed (missing status doc + 3 small fixes), merged, fast gate PASS (00:40). All phases P0-P7 on `integration`; QA of Month, Reminders, Settings and shell-test updates still to do after QA P3+P4.
+- QA P3+P4 returned at 02:00 (STOP): 39 UI tests green on `ph/qa-p3p4` with 4 expected-failure audit bugs; branch pushed, not merged. Run ended at STOP. Owner: `git push origin integration:main` when happy.

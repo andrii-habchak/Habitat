@@ -56,3 +56,11 @@ Hard rules (from the owner; also in `AGENTS.md`):
 - Everything stays inside the repo; build output in `build.noindex/`.
 - Only QA agents use the `Habitat-QA` simulator, one at a time.
 - Do not invent requirements; take a default and log it in `docs/STATUS.md` "Decisions for owner".
+
+## State after Run 1 (ended 2026-11-04 02:00)
+
+P0-P7 merged on `integration` (reduced P7: no icon). Next, in order, with estimates:
+1. Merge `ph/qa-p3p4` (5 min), then `gate.sh fast`.
+2. QA round Month + Reminders + Settings + shell tests (45 min), then fixes of QA bugs listed in STATUS "Open items" by the P3/P4/P5/P6/P7 implementers (30 min), `gate.sh full` (10 min).
+3. Remaining P7 items: app icon, notification-settings link row, unit-test target (needs `project.yml`).
+Prompt: use the one-liner at the top with a new deadline.
