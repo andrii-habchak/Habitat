@@ -42,6 +42,20 @@ final class ScreenshotTests: XCTestCase {
                 try data.write(to: file)
             }
             app.terminate()
+            // Empty store: Habits empty state and Month rings without habits.
+            let empty = XCUIApplication()
+            empty.launchArguments = ["-uiTesting", "-seed", "empty", "-today", "2026-11-03", "-fakeNotifications"]
+                + variant.args
+            empty.launch()
+            XCTAssertTrue(empty.tabBars.firstMatch.waitForExistence(timeout: 10))
+            for tab in ["Habits", "Month"] {
+                empty.tabBars.buttons[tab].tap()
+                sleep(1)
+                let data = XCUIScreen.main.screenshot().pngRepresentation
+                let name = "\(tab.lowercased())-empty-\(variant.name).png"
+                try data.write(to: outputDirectory.appendingPathComponent(name))
+            }
+            empty.terminate()
         }
     }
 }

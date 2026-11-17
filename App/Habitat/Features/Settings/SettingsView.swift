@@ -83,6 +83,7 @@ private struct SettingsScreen: View {
                 Text("Data")
                     .foregroundStyle(.primary)
             }
+            .headerProminence(.increased)
 
             Section {
                 Button {
@@ -91,6 +92,9 @@ private struct SettingsScreen: View {
                     }
                 } label: {
                     Label("Notification settings", systemImage: "bell")
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
                         .frame(minHeight: Theme.minTapTarget, alignment: .leading)
                 }
                 .accessibilityIdentifier("settings.notifications")
@@ -99,16 +103,19 @@ private struct SettingsScreen: View {
                 Text("Notifications")
                     .foregroundStyle(.primary)
             }
+            .headerProminence(.increased)
 
             Section {
                 aboutRow("App", SettingsModel.appName)
                 aboutRow("Version", SettingsModel.versionText)
                 Text("Data stays on this device.")
+                    .font(.body)
                     .foregroundStyle(.primary)
             } header: {
                 Text("About")
                     .foregroundStyle(.primary)
             }
+            .headerProminence(.increased)
         }
         .sheet(
             isPresented: $showShare,

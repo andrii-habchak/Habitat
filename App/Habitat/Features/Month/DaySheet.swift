@@ -32,7 +32,7 @@ struct DaySheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Close", action: onClose)
+                    Button(action: onClose) { Text("Close").font(.body.weight(.semibold)) }
                         .accessibilityIdentifier("month.daySheet.close")
                 }
             }

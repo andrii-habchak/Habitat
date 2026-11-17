@@ -64,19 +64,42 @@ struct HabitsView: View {
         }
     }
 
+    /// Built by hand (not `ContentUnavailableView`, which swallows the children's identifiers),
+    /// so `habits.empty` names the container and `habits.empty.add` the button.
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label("No habits yet", systemImage: "checklist")
-        } description: {
-            Text("Add a habit to start tracking it.")
-                .foregroundStyle(.primary)
-        } actions: {
-            Button("Add habit") { openNew() }
+        ScrollView {
+            VStack(spacing: Theme.Spacing.medium) {
+                Image(systemName: "checklist")
+                    .font(.largeTitle)
+                    .accessibilityHidden(true)
+                Text("No habits yet")
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                Text("Add a habit to start tracking it.")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                Button {
+                    openNew()
+                } label: {
+                    Text("Add habit")
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, Theme.Spacing.medium)
+                        .frame(minHeight: Theme.minTapTarget)
+                        .contentShape(Rectangle())
+                }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.prominentButtonTint)
                 .accessibilityIdentifier(AccessibilityID.make("habits", "empty.add"))
+            }
+            .foregroundStyle(.primary)
+            .padding(Theme.Spacing.large)
+            .frame(maxWidth: .infinity)
+            // On the content, inside the scroll view: an id on the ScrollView itself is
+            // overridden by the screen's `habits.screen`.
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
         }
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
+        .scrollBounceBehavior(.basedOnSize)
     }
 
     private func list(_ model: HabitsViewModel) -> some View {
@@ -128,6 +151,7 @@ struct HabitsView: View {
             Text("Archived")
                 .foregroundStyle(.primary)
         }
+        .headerProminence(.increased)
     }
 
     @ViewBuilder

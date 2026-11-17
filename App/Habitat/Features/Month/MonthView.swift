@@ -88,6 +88,9 @@ struct MonthView: View {
 
             Text(MonthSymbols.title(month))
                 .font(.title2.bold())
+                .lineLimit(2)
+                .minimumScaleFactor(0.6)
+                .allowsTightening(true)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .accessibilityAddTraits(.isHeader)
@@ -204,10 +207,9 @@ struct MonthView: View {
         } label: {
             ZStack {
                 DonutView(segments: cell.segments)
-                    .opacity(cell.isInMonth ? 1 : 0.85)
                 Text("\(cell.day.day)")
-                    .font(compact ? .caption2 : .caption)
-                    .fontWeight(cell.isToday ? .heavy : .regular)
+                    .font(compact || !cell.isInMonth ? .caption2 : .caption)
+                    .fontWeight(cell.isToday ? .heavy : (cell.isInMonth ? .medium : .regular))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .foregroundStyle(.primary)

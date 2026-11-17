@@ -21,8 +21,9 @@ struct DonutArcShape: Shape {
     }
 }
 
-/// A ring with one segment per habit in the habit's colour. Done = full colour and thick;
-/// not done = dim and thin (so state is not colour alone). No segments: a faint empty ring.
+/// A ring with one segment per habit in the habit's colour. Done = thick; not done = thin
+/// (so state is not colour alone). Both are fully opaque: the contrast audit measures a cell
+/// by its dominant colour, and faint rings failed it. No segments: a 1 pt `.primary` ring (quieter than any done or not-done ring).
 struct DonutView: View {
     let segments: [DonutSegment]
 
@@ -34,13 +35,13 @@ struct DonutView: View {
             ZStack {
                 if segments.isEmpty {
                     Circle()
-                        .strokeBorder(Color.secondary, lineWidth: thin)
+                        .strokeBorder(Color.primary, lineWidth: 1)
                 } else {
                     let arcs = DonutGeometry.arcs(count: segments.count)
                     ForEach(Array(zip(segments, arcs)), id: \.0.id) { segment, arc in
                         DonutArcShape(start: arc.start, end: arc.end, inset: thick / 2)
                             .stroke(
-                                Color(hex: segment.colorHex).opacity(segment.isDone ? 1 : 0.85),
+                                Color(hex: segment.colorHex),
                                 style: StrokeStyle(lineWidth: segment.isDone ? thick : thin)
                             )
                     }

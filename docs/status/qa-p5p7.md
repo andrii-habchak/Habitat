@@ -99,3 +99,56 @@ confirmation is a popover without a reachable Cancel button in the test).
 Visual (retaken, 15 files): Month dark is now readable; Reminders at XXXL stacks time and days
 without the repeated name; Settings at XXXL wraps "Export data" and hyphenates the
 "Notification settings" row ("Notif-ication"), low; Month still leaves empty space under the grid.
+
+## Round 3 (after ph/fix-qa57 at 0b1ba07)
+
+A strict run (all wrappers strict) found one fixed audit and one regression-looking failure; the
+rest of the wrappers still record failures.
+
+| Bug | State |
+|-----|-------|
+| BUG-QA57-5 Reminders list audit | fixed (wrapper removed) |
+| BUG-QA34-2 Habit editor audit | open: "Dynamic Type font sizes partially unsupported" |
+| BUG-QA34-3 Week audit | open: "Hit area is too small" |
+| BUG-QA34-4 Habits empty state audit (shell) | open: "Contrast nearly passed" |
+| BUG-QA57-3 Month grid audit | open: "Contrast failed" |
+| BUG-QA57-4 Month day sheet audit | open: "Contrast failed" |
+| BUG-QA57-6 Reminder editor audit | open: "Contrast failed" |
+| BUG-QA57-7 Settings audit | open: "Contrast nearly passed" |
+| BUG-QA57-8 Month empty state audit (shell) | open: "Contrast failed" |
+| BUG-QA-REG-1 `habits.empty` id | open (low): debug tree shows `ScrollView identifier 'habits.screen'` containing `StaticText 'No habits yet'` and `Button 'habits.empty.add'`; no element has `habits.empty` in any query type. Test finds the empty state by text and `habits.empty.add`. |
+
+Visual findings (screenshots retaken, 21 files incl. `habits-empty-*` and `month-empty-*`):
+- BUG-QA57-12 (should-fix): the Habits empty state "Add habit" button is black text on a saturated blue
+  fill (`habits-empty-xxxl.png`, also light): low contrast.
+- BUG-QA57-13 (should-fix): empty Month days (no habits) are drawn as thick white rings in dark mode
+  (`month-empty-dark.png`), visually louder than rings with data; expected a thin line.
+- BUG-QA57-14 (low): Month title hyphenates at XXXL ("No-vember 2026"); it needs `minimumScaleFactor` or
+  a line limit. Settings at XXXL also hyphenates "Notif-ication settings" (low).
+- Habits list, Week (light and dark), Month with data (light, dark) and Reminders look correct; Month
+  out-of-month days are no longer dimmed (as intended).
+
+## Round 4 (after ph/fix-qa57 at 227f93b) — final
+
+`scripts/gate.sh full`: PASS, 84 tests, 1 skipped (ScreenshotTests, env-gated), 0 failures
+(state 362a434 + 70c5189, non-strict wrappers, strict `habits.empty` assertion).
+
+| Bug | Final state |
+|-----|-------------|
+| BUG-QA-REG-1 `habits.empty` id | fixed: the strict `el(app, "habits.empty")` assertion passes |
+| BUG-QA57-12 Add habit button contrast | fixed: white label on blue (`habits-empty-xxxl.png`, `habits-empty-dark.png`) |
+| BUG-QA57-13 empty Month rings | fixed: thin 1 pt line in light and dark (`month-empty-light.png`, `month-empty-dark.png`) |
+| BUG-QA57-14 title/row hyphenation | fixed: Month title wraps at the word at XXXL (`month-xxxl.png`) |
+| BUG-QA57-5 Reminders list audit | fixed |
+| BUG-QA34-2 Habit editor audit | open: "Dynamic Type font sizes partially unsupported" |
+| BUG-QA34-3 Week audit | open: "Hit area is too small" |
+| BUG-QA34-4 Habits empty state audit (shell) | open: "Contrast nearly passed" |
+| BUG-QA57-3 Month grid audit | open: "Contrast failed" |
+| BUG-QA57-4 Month day sheet audit | open: "Contrast failed" |
+| BUG-QA57-6 Reminder editor audit | open: "Contrast failed" |
+| BUG-QA57-7 Settings audit | open: "Contrast nearly passed" |
+| BUG-QA57-8 Month empty state audit (shell) | open: "Contrast failed" |
+
+(The open audit rows were last confirmed by the strict run of round 3; round 4 changed app code and
+their wrappers are still non-strict, so a fresh strict run would show whether any of them now pass.)
+Not read after the retake: Settings and Reminders XXXL, Week and Habits with data (unchanged by round 4).

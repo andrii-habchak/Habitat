@@ -207,6 +207,7 @@ private struct HabitHeader: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Goal \(weekly.target) days a week, \(weekly.done) done")
                 .accessibilityValue(status.spoken)
+                .accessibilityAddTraits(.isStaticText)
                 .accessibilityIdentifier(AccessibilityID.make("week", "progress", habitID))
         }
     }
@@ -218,6 +219,7 @@ private struct HabitHeader: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Streak \(WeekFormat.streakText(row.streak, weekly: row.isWeekly))")
             .accessibilityValue("\(row.streak)")
+            .accessibilityAddTraits(.isStaticText)
             .accessibilityIdentifier(AccessibilityID.make("week", "streak", habitID))
     }
 

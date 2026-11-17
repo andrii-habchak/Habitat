@@ -40,6 +40,10 @@ enum Theme {
         "#D6409F" // pink
     ]
 
+    /// Fill of prominent buttons: white text on it is at least 5:1 in light and dark
+    /// (system blue is about 4:1, which fails the contrast audit).
+    static let prominentButtonTint = Color(hex: "#2563EB")
+
     static let defaultHabitColorHex = habitPalette[5]
 
     /// Weekly goal status colours. Use as text/icon colour on the system background
