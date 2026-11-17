@@ -29,7 +29,9 @@ final class ShellSmokeTests: XCTestCase {
             let button = tabBar.buttons[tab.label]
             XCTAssertTrue(button.exists, "missing tab \(tab.label)")
             button.tap()
-            let placeholder = app.descendants(matching: .any)["\(tab.screen).placeholder"]
+            let built: Set<String> = ["habits", "week"]
+            let suffix = built.contains(tab.screen) ? "screen" : "placeholder"
+            let placeholder = app.descendants(matching: .any)["\(tab.screen).\(suffix)"]
             XCTAssertTrue(placeholder.waitForExistence(timeout: 5), "\(tab.label) screen did not show")
         }
     }
