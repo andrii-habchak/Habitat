@@ -57,10 +57,11 @@ Hard rules (from the owner; also in `AGENTS.md`):
 - Only QA agents use the `Habitat-QA` simulator, one at a time.
 - Do not invent requirements; take a default and log it in `docs/STATUS.md` "Decisions for owner".
 
-## State after Run 1 (ended 2026-11-04 02:00)
+## State after Run 2 (ended 2026-11-18 ~02:00)
 
-P0-P7 merged on `integration` (reduced P7: no icon). Next, in order, with estimates:
-1. Merge `ph/qa-p3p4` (5 min), then `gate.sh fast`.
-2. QA round Month + Reminders + Settings + shell tests (45 min), then fixes of QA bugs listed in STATUS "Open items" by the P3/P4/P5/P6/P7 implementers (30 min), `gate.sh full` (10 min).
-3. Remaining P7 items: app icon, notification-settings link row, unit-test target (needs `project.yml`).
-Prompt: use the one-liner at the top with a new deadline.
+P0-P7 merged and QA'd on `integration` (fast and full gate PASS, 84 UI tests). Next, in order:
+1. Owner installs on the iPhone (docs/STATUS.md "Install on iPhone"); collect feedback.
+2. Strict audit pass: flip the remaining `XCTExpectFailure` wrappers to `strict: true`, remove those that pass, fix the rest from the failing element evidence in the xcresult (the exact element and ratio, not guesses).
+3. Untested areas: Mark-done notification action, notification smoke test, denied-permission banner (needs a LaunchOptions change), real file import.
+4. Stage 2: widget (S2), only after the owner has used the app.
+Prompt: use the one-liner at the top with a new deadline. Brief rule learned in run 2: agents never create simulators; the QA agent must run `gate.sh full` in the foreground.
