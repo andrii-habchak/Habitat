@@ -33,8 +33,11 @@ struct ReminderEditorView: View {
                     DatePicker("Time", selection: $model.time, displayedComponents: .hourAndMinute)
                         .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "time"))
                 }
-                Section("Days") {
+                Section {
                     WeekdayChips(selection: model.weekdays, toggle: model.toggle)
+                } header: {
+                    Text("Days")
+                        .foregroundStyle(.primary)
                 }
                 if model.editing != nil {
                     Section {
@@ -70,6 +73,7 @@ struct ReminderEditorView: View {
         switch model.kind {
         case .general:
             TextField("Label", text: $model.label, prompt: Text("Label, e.g. Drink water"))
+                .foregroundStyle(.primary)
                 .accessibilityLabel("Label")
                 .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "label"))
         case .habit:

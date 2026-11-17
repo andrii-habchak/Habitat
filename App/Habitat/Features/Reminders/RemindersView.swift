@@ -74,10 +74,13 @@ private struct RemindersScreen: View {
                     emptySection
                 } else {
                     ForEach(model.sections) { section in
-                        Section(section.title) {
+                        Section {
                             ForEach(section.rows) { row in
                                 rowButton(row)
                             }
+                        } header: {
+                            Text(section.title)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
@@ -203,14 +206,17 @@ private struct ReminderRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {
-            Text(row.title)
+            // A habit's name is already the section header: lead with the time instead.
+            Text(row.isHabitReminder ? row.timeText : row.title)
                 .font(.body)
             let layout = typeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Spacing.extraSmall))
                 : AnyLayout(HStackLayout(spacing: Theme.Spacing.small))
             layout {
-                Text(row.timeText)
-                    .font(.subheadline.monospacedDigit())
+                if !row.isHabitReminder {
+                    Text(row.timeText)
+                        .font(.subheadline.monospacedDigit())
+                }
                 Text(row.daysText)
                     .font(.subheadline)
             }

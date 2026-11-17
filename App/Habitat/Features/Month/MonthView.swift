@@ -153,7 +153,7 @@ struct MonthView: View {
             .frame(minHeight: Theme.minTapTarget)
             .foregroundStyle(Color.primary)
             .background(
-                Capsule().fill(selected ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.12))
+                Capsule().fill(selected ? Color.accentColor.opacity(0.2) : Color(.secondarySystemFill))
             )
             .overlay(Capsule().strokeBorder(selected ? Color.accentColor : Color.clear, lineWidth: 1.5))
         }
@@ -170,7 +170,7 @@ struct MonthView: View {
             ForEach(Weekday.allCases, id: \.self) { weekday in
                 Text(MonthSymbols.header(weekday, compact: compact))
                     .font(.caption.bold())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
             }
@@ -204,13 +204,13 @@ struct MonthView: View {
         } label: {
             ZStack {
                 DonutView(segments: cell.segments)
-                    .opacity(cell.isInMonth ? 1 : 0.4)
+                    .opacity(cell.isInMonth ? 1 : 0.7)
                 Text("\(cell.day.day)")
                     .font(compact ? .caption2 : .caption)
-                    .fontWeight(cell.isToday ? .heavy : (cell.isInMonth ? .regular : .light))
+                    .fontWeight(cell.isToday ? .heavy : .regular)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(cell.isInMonth ? Color.primary : Color.secondary)
                     .padding(Theme.Spacing.extraSmall)
             }
             .padding(2)

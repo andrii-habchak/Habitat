@@ -84,6 +84,7 @@ struct RemindersViewModelTests {
     }
 }
 
+@MainActor
 @Suite("ReminderFormat (R-REM)")
 struct ReminderFormatTests {
     @Test("summaries for every day, weekdays and weekends")
@@ -91,7 +92,10 @@ struct ReminderFormatTests {
         #expect(ReminderFormat.days(Set(Weekday.allCases)) == "Every day")
         #expect(ReminderFormat.days([.monday, .tuesday, .wednesday, .thursday, .friday]) == "Weekdays")
         #expect(ReminderFormat.days([.saturday, .sunday]) == "Weekends")
-        #expect(ReminderFormat.spokenDays([.saturday, .sunday]) == "Weekends")
+        #expect(ReminderFormat.spokenDays([.saturday, .sunday]) == "Saturday, Sunday")
+        let workdays: Set<Weekday> = [.monday, .tuesday, .wednesday, .thursday, .friday]
+        #expect(ReminderFormat.spokenDays(workdays).hasPrefix("Monday, Tuesday"))
+        #expect(ReminderFormat.spokenDays(Set(Weekday.allCases)) == "Every day")
     }
 
     @Test("other sets list days Monday first")
@@ -105,6 +109,23 @@ struct ReminderFormatTests {
         #expect(Weekday.allCases.map(ReminderFormat.fullName) == [
             "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
         ])
+    }
+
+    @Test("spoken time has hour and minute")
+    func spokenTime() throws {
+        let time = try #require(ReminderTime(hour: 21, minute: 5))
+        let spoken = ReminderFormat.spokenTime(time)
+        #expect(spoken.contains(":05"))
+        #expect(spoken.contains("9") || spoken.contains("21"))
+    }
+
+    @Test("habit reminders are flagged so the row can skip the repeated name")
+    func habitFlag() throws {
+        let time = try #require(ReminderTime(hour: 7, minute: 0))
+        let habitReminder = Reminder(kind: .habit(UUID()), time: time, weekdays: [.monday])
+        let general = Reminder(kind: .general(label: "Water"), time: time, weekdays: [.monday])
+        #expect(RemindersViewModel.row(habitReminder, habits: []).isHabitReminder)
+        #expect(!RemindersViewModel.row(general, habits: []).isHabitReminder)
     }
 
     @Test("time text and the Date round trip")
