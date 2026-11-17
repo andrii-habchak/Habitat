@@ -146,7 +146,10 @@ enum ReminderFormat {
     /// Time for VoiceOver, always with the hour and minute spelled out ("8:00 AM" or "21:00").
     static func spokenTime(_ time: ReminderTime, locale: Locale = .current) -> String {
         guard let date = ReminderTimeConversion.date(from: time) else { return time.text }
+        // ICU uses U+202F (narrow no-break space) before AM/PM; speak and compare a plain space.
         return date.formatted(.dateTime.hour(.defaultDigits(amPM: .wide)).minute().locale(locale))
+            .replacingOccurrences(of: "\u{202F}", with: " ")
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
     }
 
     static func days(_ weekdays: Set<Weekday>) -> String {
