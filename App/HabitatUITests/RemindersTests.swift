@@ -69,7 +69,10 @@ final class RemindersTests: XCTestCase {
         XCTAssertTrue(general.waitForExistence(timeout: 5))
         XCTAssertTrue(general.label.contains("Plan the day"), general.label)
         XCTAssertTrue(general.label.contains("8:00") || general.label.contains("08:00"), general.label)
-        XCTAssertTrue(general.label.contains("Weekdays"), "Mon-Fri reads as Weekdays: \(general.label)")
+        for name in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] {
+            XCTAssertTrue(general.label.contains(name), general.label)
+        }
+        XCTAssertFalse(general.label.contains("Saturday"), general.label)
 
         let habit = el(app, "reminders.row.\(rid(2))")
         XCTAssertTrue(habit.exists)
@@ -119,7 +122,8 @@ final class RemindersTests: XCTestCase {
         save(app)
         XCTAssertTrue(waitGone(el(app, "reminders.editor")))
         let row = app.buttons.matching(
-            NSPredicate(format: "label BEGINSWITH 'Habit reminder: Read' AND label CONTAINS 'Weekends'")).firstMatch
+            NSPredicate(format: "label BEGINSWITH 'Habit reminder: Read' AND label ENDSWITH 'Saturday, Sunday'"))
+            .firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5), "rows: \(rows(app))")
     }
 
@@ -259,7 +263,8 @@ final class RemindersTests: XCTestCase {
         setWeekdays(app, selected: [7])
         el(app, "reminders.editor.cancel").tap()
         XCTAssertTrue(waitGone(el(app, "reminders.editor")))
-        XCTAssertTrue(el(app, "reminders.row.\(rid(1))").label.contains("Weekdays"), "original days kept")
+        let kept = el(app, "reminders.row.\(rid(1))").label
+        XCTAssertTrue(kept.contains("Friday") && !kept.contains("Sunday"), "original days kept: \(kept)")
     }
 
     // MARK: Delete
@@ -308,6 +313,14 @@ final class RemindersTests: XCTestCase {
         typeLabel(app, "Again")
         save(app)
         XCTAssertTrue(waitGone(el(app, "reminders.editor")), "no clash with the deleted reminder")
+    }
+
+    @MainActor
+    func testHabitKindWithoutActiveHabitsShowsExplanation() {
+        let app = launchReminders(seed: "empty")
+        openNew(app)
+        app.segmentedControls["reminders.editor.kind"].buttons["Habit"].tap()
+        XCTAssertTrue(el(app, "reminders.editor.noHabits").waitForExistence(timeout: 5), "no habits text")
     }
 
     // MARK: Permission and mark done

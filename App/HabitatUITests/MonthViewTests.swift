@@ -37,7 +37,6 @@ final class MonthViewTests: XCTestCase {
     func testMonthTitleNamesTheMonthAndYear() {
         let app = launchMonth()
         XCTAssertTrue(el(app, "month.title").waitForExistence(timeout: 5))
-        XCTExpectFailure("BUG-QA57-1: title reads 'M11 2026' instead of 'November 2026'", strict: false)
         XCTAssertTrue(el(app, "month.title").label.contains("November 2026"), el(app, "month.title").label)
     }
 
@@ -54,9 +53,7 @@ final class MonthViewTests: XCTestCase {
         XCTAssertEqual(first.frame.minY, sunday.frame.minY, accuracy: 2, "26 Oct and 1 Nov share the first row")
         XCTAssertGreaterThan(monday.frame.minY, sunday.frame.minY, "2 Nov starts the second row")
         XCTAssertEqual(monday.frame.minX, first.frame.minX, accuracy: 2, "Mondays share a column")
-        XCTExpectFailure("BUG-QA57-1: cell label reads 'Mon 26 M10' (month and weekday names broken)", strict: false) {
-            XCTAssertTrue(first.label.hasPrefix("Monday 26 October"), first.label)
-        }
+        XCTAssertTrue(first.label.hasPrefix("Monday 26 October"), first.label)
     }
 
     @MainActor
@@ -199,9 +196,7 @@ final class MonthViewTests: XCTestCase {
         XCTAssertTrue(el(app, "month.daySheet").waitForExistence(timeout: 5))
         let toggle = el(app, "month.daySheet.toggle.\(hid(1))")
         if toggle.exists {
-            XCTExpectFailure("BUG-QA57-2: future-day toggle in the sheet is not exposed as disabled", strict: false) {
-                XCTAssertFalse(toggle.isEnabled, "future toggle must be disabled")
-            }
+            XCTAssertFalse(toggle.isEnabled, "future toggle must be disabled")
             toggle.tap()
             XCTAssertEqual(value(toggle), "not done")
         }

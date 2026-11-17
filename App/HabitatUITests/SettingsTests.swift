@@ -102,6 +102,12 @@ final class SettingsTests: XCTestCase {
         XCTAssertFalse(app.buttons["Merge"].exists, "no merge/replace dialog without a file")
     }
 
+    @MainActor
+    func testNotificationsSettingsLinkIsExposed() {
+        let app = launchSettings()
+        XCTAssertTrue(el(app, "settings.notifications").waitForExistence(timeout: 5))
+    }
+
     // MARK: R-A11Y
 
     @MainActor

@@ -65,3 +65,37 @@ XXXL; Settings rows wrap ("Export data") and the About rows scroll under the tab
   clashes use the default 09:00).
 - Import with a real file (system picker is out of process): only open and cancel.
 - The share sheet's actual file content.
+
+## Re-verification after the fix lanes (integration 4266bcd)
+
+Method: every `XCTExpectFailure` was made strict for one full run; a wrapper whose audit now
+passes fails with "expected failure but none recorded". Fixed wrappers were removed, the others
+went back to non-strict. The audit messages below are those of the earlier runs; the strict run
+confirmed each still records a failure.
+
+| Bug | State | Note |
+|-----|-------|------|
+| BUG-QA34-1 Habits list audit | fixed | wrapper removed, audit passes |
+| BUG-QA34-2 Habit editor audit | open | "Dynamic Type font sizes partially unsupported" |
+| BUG-QA34-3 Week audit | open | "Hit area is too small" |
+| BUG-QA34-4 Habits empty state audit | open | "Contrast nearly passed" (shell test) |
+| BUG-QA57-1 Month names | fixed | title "November 2026", labels "Monday 26 October, ..." asserted directly |
+| BUG-QA57-2 future-day toggles | fixed | `isEnabled` is false, wrapper removed |
+| BUG-QA57-3 Month grid audit | open | "Contrast failed" |
+| BUG-QA57-4 Month day sheet audit | open | "Contrast failed" |
+| BUG-QA57-5 Reminders list audit | open | "Contrast nearly passed" |
+| BUG-QA57-6 Reminder editor audit | open | "Contrast failed" |
+| BUG-QA57-7 Settings audit | open | "Contrast nearly passed" (also shell test) |
+| BUG-QA57-8 Month empty state audit | open | "Contrast failed" (shell test) |
+| BUG-QA57-9 row label summary words | fixed | rows now spell out the days |
+| BUG-QA57-10 duplicated habit name | fixed | habit rows no longer repeat the section title (XXXL) |
+| BUG-QA57-11 Month dark faintness | fixed visually | dark segments and out-of-month days are readable |
+| BUG-QA-REG-1 (should-fix) | open | `habits.empty` is no longer exposed: the empty state container reports `habits.screen` (element tree: `habits.screen` holds "No habits yet" and `habits.empty.add`). Repro: launch `-seed empty`, look up `habits.empty`. The test finds the empty state by text and `habits.empty.add`. |
+
+Ids checked: `habits.empty.add` (works), `settings.notifications` (present, test added),
+`reminders.editor.noHabits` (test added), `habits.archiveCancel` (not reachable: the archive
+confirmation is a popover without a reachable Cancel button in the test).
+
+Visual (retaken, 15 files): Month dark is now readable; Reminders at XXXL stacks time and days
+without the repeated name; Settings at XXXL wraps "Export data" and hyphenates the
+"Notification settings" row ("Notif-ication"), low; Month still leaves empty space under the grid.
