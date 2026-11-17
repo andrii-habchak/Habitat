@@ -26,11 +26,13 @@ struct HabitEditorView: View {
                         .accessibilityIdentifier(AccessibilityID.make("habits", "editor.cancel"))
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button {
                         if model.save() {
                             reminderSync?.replan()
                             dismiss()
                         }
+                    } label: {
+                        Text("Save").font(.body.weight(.semibold))
                     }
                     .accessibilityIdentifier(AccessibilityID.make("habits", "editor.save"))
                 }

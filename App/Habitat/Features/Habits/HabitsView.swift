@@ -64,17 +64,29 @@ struct HabitsView: View {
         }
     }
 
+    /// Built by hand (not `ContentUnavailableView`, which swallows the children's identifiers),
+    /// so `habits.empty` names the container and `habits.empty.add` the button.
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label("No habits yet", systemImage: "checklist")
-        } description: {
-            Text("Add a habit to start tracking it.")
+        VStack(spacing: Theme.Spacing.medium) {
+            Image(systemName: "checklist")
+                .font(.largeTitle)
                 .foregroundStyle(.primary)
-        } actions: {
+                .accessibilityHidden(true)
+            Text("No habits yet")
+                .font(.title2.bold())
+                .multilineTextAlignment(.center)
+            Text("Add a habit to start tracking it.")
+                .font(.body)
+                .multilineTextAlignment(.center)
             Button("Add habit") { openNew() }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.prominentButtonTint)
+                .frame(minHeight: Theme.minTapTarget)
                 .accessibilityIdentifier(AccessibilityID.make("habits", "empty.add"))
         }
+        .foregroundStyle(.primary)
+        .padding(Theme.Spacing.large)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
     }
@@ -128,6 +140,7 @@ struct HabitsView: View {
             Text("Archived")
                 .foregroundStyle(.primary)
         }
+        .headerProminence(.increased)
     }
 
     @ViewBuilder

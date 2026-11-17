@@ -82,6 +82,7 @@ private struct RemindersScreen: View {
                             Text(section.title)
                                 .foregroundStyle(.primary)
                         }
+                        .headerProminence(.increased)
                     }
                 }
             }

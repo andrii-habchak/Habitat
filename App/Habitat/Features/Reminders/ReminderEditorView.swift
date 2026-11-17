@@ -61,7 +61,7 @@ struct ReminderEditorView: View {
                         .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "cancel"))
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
+                    Button(action: save) { Text("Save").font(.body.weight(.semibold)) }
                         .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "save"))
                 }
             }
