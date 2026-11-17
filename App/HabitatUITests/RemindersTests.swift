@@ -338,7 +338,6 @@ final class RemindersTests: XCTestCase {
     func testAuditRemindersList() throws {
         let app = launchReminders()
         XCTAssertTrue(el(app, "reminders.row.\(rid(1))").waitForExistence(timeout: 5))
-        XCTExpectFailure("BUG-QA57-5: reminders list audit (Contrast nearly passed)", strict: false)
         try app.performAccessibilityAudit()
     }
 

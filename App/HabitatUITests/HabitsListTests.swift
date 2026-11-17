@@ -45,14 +45,13 @@ final class HabitsListTests: XCTestCase {
     @MainActor
     func testEmptySeedShowsEmptyStateAndAddOpensEditor() {
         let app = launch(seed: "empty")
-        // BUG-QA-REG-1: `habits.empty` is no longer exposed (the empty state reports `habits.screen`),
-        // so the empty state is recognised by its text and the `habits.empty.add` button.
-        XCTAssertTrue(app.staticTexts["No habits yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(el(app, "habits.empty").waitForExistence(timeout: 5), "habits.empty id")
+        XCTAssertTrue(app.staticTexts["No habits yet"].exists)
         XCTAssertTrue(el(app, "habits.empty.add").exists)
         el(app, "habits.empty.add").tap()
         XCTAssertTrue(el(app, "habits.editor").waitForExistence(timeout: 5))
         el(app, "habits.editor.cancel").tap()
-        XCTAssertTrue(app.staticTexts["No habits yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(el(app, "habits.empty").waitForExistence(timeout: 5))
     }
 
     @MainActor
