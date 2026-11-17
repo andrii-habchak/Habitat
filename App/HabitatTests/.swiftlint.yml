@@ -1,0 +1,3 @@
+# Fixtures built from literals: a failed `!` fails the test.
+disabled_rules:
+  - force_unwrapping
