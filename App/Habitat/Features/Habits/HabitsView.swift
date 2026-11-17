@@ -67,26 +67,34 @@ struct HabitsView: View {
     /// Built by hand (not `ContentUnavailableView`, which swallows the children's identifiers),
     /// so `habits.empty` names the container and `habits.empty.add` the button.
     private var emptyState: some View {
-        VStack(spacing: Theme.Spacing.medium) {
-            Image(systemName: "checklist")
-                .font(.largeTitle)
-                .foregroundStyle(.primary)
-                .accessibilityHidden(true)
-            Text("No habits yet")
-                .font(.title2.bold())
-                .multilineTextAlignment(.center)
-            Text("Add a habit to start tracking it.")
-                .font(.body)
-                .multilineTextAlignment(.center)
-            Button("Add habit") { openNew() }
+        ScrollView {
+            VStack(spacing: Theme.Spacing.medium) {
+                Image(systemName: "checklist")
+                    .font(.largeTitle)
+                    .accessibilityHidden(true)
+                Text("No habits yet")
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                Text("Add a habit to start tracking it.")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                Button {
+                    openNew()
+                } label: {
+                    Text("Add habit")
+                        .padding(.horizontal, Theme.Spacing.medium)
+                        .frame(minHeight: Theme.minTapTarget)
+                        .contentShape(Rectangle())
+                }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.prominentButtonTint)
-                .frame(minHeight: Theme.minTapTarget)
                 .accessibilityIdentifier(AccessibilityID.make("habits", "empty.add"))
+            }
+            .foregroundStyle(.primary)
+            .padding(Theme.Spacing.large)
+            .frame(maxWidth: .infinity)
         }
-        .foregroundStyle(.primary)
-        .padding(Theme.Spacing.large)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .scrollBounceBehavior(.basedOnSize)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
     }

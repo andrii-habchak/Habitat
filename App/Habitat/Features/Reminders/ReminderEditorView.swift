@@ -39,6 +39,7 @@ struct ReminderEditorView: View {
                     Text("Days")
                         .foregroundStyle(.primary)
                 }
+                .headerProminence(.increased)
                 if model.editing != nil {
                     Section {
                         Button("Delete Reminder", role: .destructive) {

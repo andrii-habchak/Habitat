@@ -205,7 +205,7 @@ struct MonthView: View {
             ZStack {
                 DonutView(segments: cell.segments)
                 Text("\(cell.day.day)")
-                    .font(compact ? .caption2 : .caption)
+                    .font(compact || !cell.isInMonth ? .caption2 : .caption)
                     .fontWeight(cell.isToday ? .heavy : (cell.isInMonth ? .medium : .regular))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
