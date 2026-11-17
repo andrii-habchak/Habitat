@@ -40,6 +40,7 @@ struct HabitsView: View {
             }
             .accessibilityIdentifier(AccessibilityID.make("habits", "archiveConfirm"))
             Button("Cancel", role: .cancel) {}
+                .accessibilityIdentifier(AccessibilityID.make("habits", "archiveCancel"))
         } message: { _ in
             Text("It leaves the list; its history is kept and you can unarchive it later.")
         }
@@ -68,11 +69,13 @@ struct HabitsView: View {
             Label("No habits yet", systemImage: "checklist")
         } description: {
             Text("Add a habit to start tracking it.")
+                .foregroundStyle(.primary)
         } actions: {
             Button("Add habit") { openNew() }
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier(AccessibilityID.make("habits", "empty.add"))
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
     }
 
@@ -100,8 +103,11 @@ struct HabitsView: View {
 
     private func archivedSection(_ model: HabitsViewModel) -> some View {
         Section {
-            Toggle("Show archived", isOn: $showArchived.animation())
-                .accessibilityIdentifier(AccessibilityID.make("habits", "showArchived"))
+            Toggle(isOn: $showArchived.animation()) {
+                Text("Show archived")
+                    .foregroundStyle(.primary)
+            }
+            .accessibilityIdentifier(AccessibilityID.make("habits", "showArchived"))
             if showArchived {
                 ForEach(model.archived) { row in
                     habitRow(row, archived: true)
@@ -120,6 +126,7 @@ struct HabitsView: View {
             }
         } header: {
             Text("Archived")
+                .foregroundStyle(.primary)
         }
     }
 
@@ -139,7 +146,7 @@ struct HabitsView: View {
                     .accessibilityHidden(true)
                 let streakView = HStack(spacing: Theme.Spacing.extraSmall) {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(row.streak > 0 ? Theme.Status.inProgress : Color.secondary)
+                        .foregroundStyle(row.streak > 0 ? Theme.Status.inProgress : Color.primary)
                     Text(HabitFormat.shortStreak(row.streak, goal: habit.goal))
                         .font(.body.monospacedDigit())
                         .foregroundStyle(.primary)
@@ -151,7 +158,7 @@ struct HabitsView: View {
                         .foregroundStyle(.primary)
                     Text(HabitFormat.goalText(habit.goal))
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary)
                 }
                 if typeSize.isAccessibilitySize {
                     VStack(alignment: .leading, spacing: Theme.Spacing.extraSmall) {

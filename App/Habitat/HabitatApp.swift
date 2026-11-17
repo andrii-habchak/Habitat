@@ -1,5 +1,6 @@
 import HabitatCore
 import HabitatData
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -18,7 +19,7 @@ struct HabitatApp: App {
         let clock = AppServices.makeClock(for: context.launchOptions)
         do {
             let container = try MainActor.assumeIsolated {
-                try HabitatStore.prepare(context.storeConfiguration, clock: clock)
+                try Self.prepareStore(context.storeConfiguration, clock: clock)
             }
             self.services = AppServices(container: container, clock: clock)
         } catch {
@@ -32,6 +33,20 @@ struct HabitatApp: App {
             let delegate = ReminderNotificationDelegate(sync: sync)
             delegate.install()
             return (sync, delegate)
+        }
+    }
+
+    /// An unknown `-seed` name is logged and ignored (the store starts empty) instead of crashing.
+    @MainActor
+    private static func prepareStore(_ configuration: StoreConfiguration, clock: any Clock) throws -> ModelContainer {
+        do {
+            return try HabitatStore.prepare(configuration, clock: clock)
+        } catch let error as SeedError {
+            Logger(subsystem: "io.github.andrii-habchak.Habitat", category: "launch")
+                .error("Ignoring seed: \(error.description, privacy: .public)")
+            var unseeded = configuration
+            unseeded.seedFixture = nil
+            return try HabitatStore.prepare(unseeded, clock: clock)
         }
     }
 

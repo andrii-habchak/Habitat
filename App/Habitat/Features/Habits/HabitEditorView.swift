@@ -43,6 +43,7 @@ struct HabitEditorView: View {
         Section {
             TextField("Name", text: $model.name)
                 .textInputAutocapitalization(.sentences)
+                .autocorrectionDisabled()
                 .submitLabel(.done)
                 .onChange(of: model.name) { model.clearError() }
                 .accessibilityIdentifier(AccessibilityID.make("habits", "editor.name"))
@@ -98,7 +99,8 @@ struct HabitEditorView: View {
                 Text("Every day").tag(HabitEditorModel.GoalKind.daily)
                 Text("Times a week").tag(HabitEditorModel.GoalKind.weekly)
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.inline)
+            .labelsHidden()
             .accessibilityIdentifier(AccessibilityID.make("habits", "editor.goalKind"))
             if model.goalKind == .weekly {
                 Stepper(
