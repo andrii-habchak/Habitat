@@ -81,6 +81,7 @@ private struct SettingsScreen: View {
                 }
             } header: {
                 Text("Data")
+                    .foregroundStyle(.primary)
             }
 
             Section {
@@ -96,6 +97,7 @@ private struct SettingsScreen: View {
                 .accessibilityHint("Opens Habitat's notification settings in the Settings app")
             } header: {
                 Text("Notifications")
+                    .foregroundStyle(.primary)
             }
 
             Section {
@@ -105,6 +107,7 @@ private struct SettingsScreen: View {
                     .foregroundStyle(.primary)
             } header: {
                 Text("About")
+                    .foregroundStyle(.primary)
             }
         }
         .sheet(

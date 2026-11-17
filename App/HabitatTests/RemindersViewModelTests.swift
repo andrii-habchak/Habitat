@@ -82,8 +82,20 @@ struct RemindersViewModelTests {
         #expect(forHabit.accessibilityLabel.hasPrefix("Habit reminder: Read, "))
         #expect(forHabit.accessibilityLabel.hasSuffix(", Monday, Wednesday"))
     }
+
+    @Test("full VoiceOver label (en_US)")
+    func fullLabel() throws {
+        let english = Locale(identifier: "en_US")
+        let reminder = Reminder(
+            kind: .habit(read.id), time: try #require(ReminderTime(hour: 21, minute: 0)),
+            weekdays: [.monday, .wednesday]
+        )
+        let row = RemindersViewModel.row(reminder, habits: [read], locale: english)
+        #expect(row.accessibilityLabel == "Habit reminder: Read, 9:00 PM, Monday, Wednesday")
+    }
 }
 
+@MainActor
 @Suite("ReminderFormat (R-REM)")
 struct ReminderFormatTests {
     @Test("summaries for every day, weekdays and weekends")
@@ -91,7 +103,10 @@ struct ReminderFormatTests {
         #expect(ReminderFormat.days(Set(Weekday.allCases)) == "Every day")
         #expect(ReminderFormat.days([.monday, .tuesday, .wednesday, .thursday, .friday]) == "Weekdays")
         #expect(ReminderFormat.days([.saturday, .sunday]) == "Weekends")
-        #expect(ReminderFormat.spokenDays([.saturday, .sunday]) == "Weekends")
+        #expect(ReminderFormat.spokenDays([.saturday, .sunday]) == "Saturday, Sunday")
+        let workdays: Set<Weekday> = [.monday, .tuesday, .wednesday, .thursday, .friday]
+        #expect(ReminderFormat.spokenDays(workdays).hasPrefix("Monday, Tuesday"))
+        #expect(ReminderFormat.spokenDays(Set(Weekday.allCases)) == "Every day")
     }
 
     @Test("other sets list days Monday first")
@@ -105,6 +120,24 @@ struct ReminderFormatTests {
         #expect(Weekday.allCases.map(ReminderFormat.fullName) == [
             "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
         ])
+    }
+
+    @Test("spoken time has hour, minute and AM/PM (en_US)")
+    func spokenTime() throws {
+        let english = Locale(identifier: "en_US")
+        let evening = try #require(ReminderTime(hour: 21, minute: 5))
+        let morning = try #require(ReminderTime(hour: 8, minute: 0))
+        #expect(ReminderFormat.spokenTime(evening, locale: english) == "9:05 PM")
+        #expect(ReminderFormat.spokenTime(morning, locale: english) == "8:00 AM")
+    }
+
+    @Test("habit reminders are flagged so the row can skip the repeated name")
+    func habitFlag() throws {
+        let time = try #require(ReminderTime(hour: 7, minute: 0))
+        let habitReminder = Reminder(kind: .habit(UUID()), time: time, weekdays: [.monday])
+        let general = Reminder(kind: .general(label: "Water"), time: time, weekdays: [.monday])
+        #expect(RemindersViewModel.row(habitReminder, habits: []).isHabitReminder)
+        #expect(!RemindersViewModel.row(general, habits: []).isHabitReminder)
     }
 
     @Test("time text and the Date round trip")

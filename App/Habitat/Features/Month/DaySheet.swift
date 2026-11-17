@@ -54,18 +54,19 @@ struct DaySheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
                     .imageScale(.large)
-                    .foregroundStyle(isDone ? Color.accentColor : Color.secondary)
+                    .foregroundStyle(Color.primary)
                     .accessibilityHidden(true)
             }
             .frame(minHeight: Theme.minTapTarget)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(isFuture)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(habit.name)
         .accessibilityValue(isDone ? "done" : "not done")
         .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("month.daySheet.toggle.\(habit.id.uuidString)")
+        // After the accessibility modifiers, so the disabled state reaches the exposed element.
+        .disabled(isFuture)
     }
 }

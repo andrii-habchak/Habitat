@@ -13,6 +13,7 @@ struct ReminderRow: Identifiable, Equatable {
     let accessibilityLabel: String
 
     var id: UUID { reminder.id }
+    var isHabitReminder: Bool { reminder.kind.habitID != nil }
 }
 
 /// A list section: "General" or one habit.
@@ -109,7 +110,7 @@ final class RemindersViewModel {
         return result
     }
 
-    static func row(_ reminder: Reminder, habits: [Habit]) -> ReminderRow {
+    static func row(_ reminder: Reminder, habits: [Habit], locale: Locale = .current) -> ReminderRow {
         let title: String
         switch reminder.kind {
         case let .general(label): title = label
@@ -123,7 +124,8 @@ final class RemindersViewModel {
             title: title,
             timeText: timeText,
             daysText: daysText,
-            accessibilityLabel: "\(kindText): \(title), \(timeText), \(ReminderFormat.spokenDays(reminder.weekdays))"
+            accessibilityLabel: "\(kindText): \(title), \(ReminderFormat.spokenTime(reminder.time, locale: locale)), "
+                + ReminderFormat.spokenDays(reminder.weekdays)
         )
     }
 
@@ -141,13 +143,20 @@ enum ReminderFormat {
         return date.formatted(date: .omitted, time: .shortened)
     }
 
+    /// Time for VoiceOver, always with the hour and minute spelled out ("8:00 AM" or "21:00").
+    static func spokenTime(_ time: ReminderTime, locale: Locale = .current) -> String {
+        guard let date = ReminderTimeConversion.date(from: time) else { return time.text }
+        return date.formatted(.dateTime.hour(.defaultDigits(amPM: .wide)).minute().locale(locale))
+    }
+
     static func days(_ weekdays: Set<Weekday>) -> String {
         if let summary = summary(weekdays) { return summary }
         return weekdays.sorted().map(\.shortName).joined(separator: ", ")
     }
 
+    /// Full weekday names; only "all seven" is shortened to "Every day".
     static func spokenDays(_ weekdays: Set<Weekday>) -> String {
-        if let summary = summary(weekdays) { return summary }
+        if weekdays.count == Weekday.allCases.count { return "Every day" }
         return weekdays.sorted().map(fullName).joined(separator: ", ")
     }
 

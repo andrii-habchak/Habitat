@@ -34,13 +34,13 @@ struct DonutView: View {
             ZStack {
                 if segments.isEmpty {
                     Circle()
-                        .strokeBorder(Color.secondary.opacity(0.25), lineWidth: thin)
+                        .strokeBorder(Color.secondary, lineWidth: thin)
                 } else {
                     let arcs = DonutGeometry.arcs(count: segments.count)
                     ForEach(Array(zip(segments, arcs)), id: \.0.id) { segment, arc in
                         DonutArcShape(start: arc.start, end: arc.end, inset: thick / 2)
                             .stroke(
-                                Color(hex: segment.colorHex).opacity(segment.isDone ? 1 : 0.5),
+                                Color(hex: segment.colorHex).opacity(segment.isDone ? 1 : 0.85),
                                 style: StrokeStyle(lineWidth: segment.isDone ? thick : thin)
                             )
                     }
