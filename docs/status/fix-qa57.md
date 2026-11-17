@@ -17,9 +17,10 @@ Branch `ph/fix-qa57` (from integration 72ffd87). Owned: `App/Habitat/**`, `Habit
    (`.current` by default, injectable for tests). Title is "November 2026", day labels are
    "Monday 26 October, ..." (the full form QA's tests expect). Tests: `MonthSymbolsTests`.
 2. Contrast (BUG-QA57-3..8, 11), by change, all unverified:
-   - Month grid: no `.light` weight; out-of-month day numbers use `.secondary` (opaque) and the
-     ring is dimmed to 0.7 instead of 0.4; not-done segments 0.75 opacity (was 0.5); the empty
-     ring is full `.secondary` (was 0.25); weekday header `.primary`; unselected chips use
+   - Month grid: no `.light` weight; out-of-month day numbers use `.primary`; the ring is dimmed
+     to 0.85 instead of 0.4; not-done segments 0.85 opacity (was 0.5), so an out-of-month
+     not-done segment is about 0.72 effective; the empty
+     ring is `.secondary` (about 60 % alpha, a non-text shape; was 0.25 of that); weekday header `.primary`; unselected chips use
      `secondarySystemFill`.
    - Day sheet: row state icon `.primary` (symbol shape carries the state).
    - Reminders list and editor, Settings: section headers set to `.primary`; reminder label
@@ -34,6 +35,9 @@ Branch `ph/fix-qa57` (from integration 72ffd87). Owned: `App/Habitat/**`, `Habit
 
 ## Defaults taken
 
-- Out-of-month days stay distinguishable by `.secondary` text and a 0.7 ring, not by low opacity.
+- Out-of-month days are told apart by the ring only (0.85 opacity), never by text colour.
+  Note: `Color.secondary` is NOT opaque (about 60 % alpha); it is no longer used for grid text.
+- Day sheet state icon is `.primary` for done and not done; the symbol shape carries the state.
+- Month title uses the standalone month name; day labels keep the format-context name.
 - QA tests that expected "Weekdays"/"Weekends" in the row label may need `contains` checks with
   full names (UI tests not touched).

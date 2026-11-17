@@ -110,7 +110,7 @@ final class RemindersViewModel {
         return result
     }
 
-    static func row(_ reminder: Reminder, habits: [Habit]) -> ReminderRow {
+    static func row(_ reminder: Reminder, habits: [Habit], locale: Locale = .current) -> ReminderRow {
         let title: String
         switch reminder.kind {
         case let .general(label): title = label
@@ -124,7 +124,7 @@ final class RemindersViewModel {
             title: title,
             timeText: timeText,
             daysText: daysText,
-            accessibilityLabel: "\(kindText): \(title), \(ReminderFormat.spokenTime(reminder.time)), "
+            accessibilityLabel: "\(kindText): \(title), \(ReminderFormat.spokenTime(reminder.time, locale: locale)), "
                 + ReminderFormat.spokenDays(reminder.weekdays)
         )
     }
@@ -144,9 +144,9 @@ enum ReminderFormat {
     }
 
     /// Time for VoiceOver, always with the hour and minute spelled out ("8:00 AM" or "21:00").
-    static func spokenTime(_ time: ReminderTime) -> String {
+    static func spokenTime(_ time: ReminderTime, locale: Locale = .current) -> String {
         guard let date = ReminderTimeConversion.date(from: time) else { return time.text }
-        return date.formatted(.dateTime.hour(.defaultDigits(amPM: .wide)).minute())
+        return date.formatted(.dateTime.hour(.defaultDigits(amPM: .wide)).minute().locale(locale))
     }
 
     static func days(_ weekdays: Set<Weekday>) -> String {

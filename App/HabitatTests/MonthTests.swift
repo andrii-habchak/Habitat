@@ -144,9 +144,10 @@ struct MonthSymbolsTests {
         #expect(short == ["M", "T", "W", "T", "F", "S", "S"])
     }
 
-    @Test("the default locale also gives real names, never placeholders")
-    func defaultLocale() {
-        #expect(!MonthSymbols.monthName(11).hasPrefix("M1"))
-        #expect(MonthSymbols.monthName(11) != "M11")
+    @Test("names follow the locale")
+    func otherLocale() {
+        #expect(MonthSymbols.monthName(11, locale: english) == "November")
+        #expect(MonthSymbols.monthName(11, locale: Locale(identifier: "fr_FR")) == "novembre")
+        #expect(MonthSymbols.monthName(1, locale: english) == "January")
     }
 }

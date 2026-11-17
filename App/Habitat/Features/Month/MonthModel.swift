@@ -125,8 +125,9 @@ enum MonthSymbols {
         return symbols[weekday.rawValue % 7]
     }
 
+    /// Month and year; the month is in the standalone (nominative) form.
     static func title(_ month: Month, locale: Locale = .current) -> String {
-        "\(monthName(month.month, locale: locale)) \(month.year)"
+        "\(calendar(locale).standaloneMonthSymbols[month.month - 1]) \(month.year)"
     }
 
     /// "Monday 2 November".

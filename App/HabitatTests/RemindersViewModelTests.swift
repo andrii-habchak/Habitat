@@ -82,6 +82,17 @@ struct RemindersViewModelTests {
         #expect(forHabit.accessibilityLabel.hasPrefix("Habit reminder: Read, "))
         #expect(forHabit.accessibilityLabel.hasSuffix(", Monday, Wednesday"))
     }
+
+    @Test("full VoiceOver label (en_US)")
+    func fullLabel() throws {
+        let english = Locale(identifier: "en_US")
+        let reminder = Reminder(
+            kind: .habit(read.id), time: try #require(ReminderTime(hour: 21, minute: 0)),
+            weekdays: [.monday, .wednesday]
+        )
+        let row = RemindersViewModel.row(reminder, habits: [read], locale: english)
+        #expect(row.accessibilityLabel == "Habit reminder: Read, 9:00 PM, Monday, Wednesday")
+    }
 }
 
 @MainActor
@@ -111,12 +122,13 @@ struct ReminderFormatTests {
         ])
     }
 
-    @Test("spoken time has hour and minute")
+    @Test("spoken time has hour, minute and AM/PM (en_US)")
     func spokenTime() throws {
-        let time = try #require(ReminderTime(hour: 21, minute: 5))
-        let spoken = ReminderFormat.spokenTime(time)
-        #expect(spoken.contains(":05"))
-        #expect(spoken.contains("9") || spoken.contains("21"))
+        let english = Locale(identifier: "en_US")
+        let evening = try #require(ReminderTime(hour: 21, minute: 5))
+        let morning = try #require(ReminderTime(hour: 8, minute: 0))
+        #expect(ReminderFormat.spokenTime(evening, locale: english) == "9:05 PM")
+        #expect(ReminderFormat.spokenTime(morning, locale: english) == "8:00 AM")
     }
 
     @Test("habit reminders are flagged so the row can skip the repeated name")
