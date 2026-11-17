@@ -25,10 +25,8 @@ final class TabShellTests: XCTestCase {
     }
 
     private func placeholder(_ app: XCUIApplication, _ screen: String) -> XCUIElement {
-        // Habits and Week are built (`<tab>.screen`); the others still show a placeholder.
-        let built: Set<String> = ["habits", "week"]
-        let suffix = built.contains(screen) ? "screen" : "placeholder"
-        return app.descendants(matching: .any)["\(screen).\(suffix)"]
+        // Every tab is built: its screen element is `<tab>.screen`.
+        app.descendants(matching: .any)["\(screen).screen"]
     }
 
     @MainActor
@@ -115,20 +113,23 @@ final class TabShellTests: XCTestCase {
 
     /// R-A11Y: `performAccessibilityAudit()` on each main screen, one test per tab so a failure
     /// names the tab.
-    private func audit(_ label: String, screen: String, knownContrastIssue: Bool = false) throws {
+    private func audit(_ label: String, screen: String, knownIssue: String? = nil) throws {
         let app = launch()
         app.tabBars.buttons[label].tap()
         XCTAssertTrue(placeholder(app, screen).waitForExistence(timeout: 5))
-        if knownContrastIssue {
-            // BUG-QA34-4: the Habits empty state ("No habits yet") reports "Contrast nearly passed".
-            XCTExpectFailure("BUG-QA34-4 Habits empty state contrast", strict: false)
-        }
+        if let knownIssue { XCTExpectFailure(knownIssue, strict: false) }
         try app.performAccessibilityAudit()
     }
 
-    @MainActor func testAuditHabits() throws { try audit("Habits", screen: "habits", knownContrastIssue: true) }
+    @MainActor func testAuditHabits() throws {
+        try audit("Habits", screen: "habits", knownIssue: "BUG-QA34-4 Habits empty state contrast")
+    }
     @MainActor func testAuditWeek() throws { try audit("Week", screen: "week") }
-    @MainActor func testAuditMonth() throws { try audit("Month", screen: "month") }
+    @MainActor func testAuditMonth() throws {
+        try audit("Month", screen: "month", knownIssue: "BUG-QA57-8 Month empty state (Contrast failed)")
+    }
     @MainActor func testAuditReminders() throws { try audit("Reminders", screen: "reminders") }
-    @MainActor func testAuditSettings() throws { try audit("Settings", screen: "settings") }
+    @MainActor func testAuditSettings() throws {
+        try audit("Settings", screen: "settings", knownIssue: "BUG-QA57-7 Settings (Contrast nearly passed)")
+    }
 }

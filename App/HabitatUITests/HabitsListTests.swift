@@ -62,14 +62,14 @@ final class HabitsListTests: XCTestCase {
         name.typeText("Stretch ")  // trailing space commits the word before autocorrect can rewrite it
         app.buttons["Red"].tap()  // swatch ids carry the hex; the label is stable
         // Goal: "Times a week", then step the count up once (default 3 -> 4).
-        app.segmentedControls["habits.editor.goalKind"].buttons["Times a week"].tap()
+        app.buttons["Times a week"].firstMatch.tap()  // works for a segmented or an inline picker
         let stepper = el(app, "habits.editor.weeklyCount")
         XCTAssertTrue(stepper.waitForExistence(timeout: 5))
         el(app, "habits.editor.weeklyCount-Increment").tap()
         el(app, "habits.editor.save").tap()
         let created = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Stretch, '")).firstMatch
         XCTAssertTrue(created.waitForExistence(timeout: 5),
-                      "new habit row; rows: \(app.buttons.allElementsBoundByIndex.map(\.label))")
+                      "new habit row; rows: \(app.buttons.allElementsBoundByIndex.map { $0.label })")
         XCTAssertTrue(created.label.hasPrefix("Stretch, 4 times a week"), "weekly goal 4, got: \(created.label)")
     }
 
