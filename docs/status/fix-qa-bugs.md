@@ -31,3 +31,13 @@ four audits and drop their `XCTExpectFailure` wrappers.
 
 - Keep `confirmationDialog` for archive (see 8).
 - Inline picker for the goal kind (see 2).
+
+## Step 2: P6 should-fix
+
+1 Fallback `ReminderSync` (previews only) is created once through a small holder, not per body.
+2 Reminder row already stacks time/days at accessibility sizes (`AnyLayout`); nothing to do.
+3 `ReminderSync.markDone` keeps the refused-toggle error after the re-plan (a successful re-plan
+  used to clear it at once).
+5 "No active habits" text has id `reminders.editor.noHabits`; `reminders.editor.habit` is the
+  picker only. Updated `docs/accessibility-ids.md` and `docs/status/p6.md`.
+4 (unit tests for MarkDoneTarget, sections, ReminderFormat) is part of step 4.

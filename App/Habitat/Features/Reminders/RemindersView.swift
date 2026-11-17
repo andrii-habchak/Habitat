@@ -7,12 +7,23 @@ import UIKit
 struct RemindersView: View {
     @Environment(\.services) private var services
     @Environment(\.reminderSync) private var reminderSync
+    @State private var fallback = FallbackSyncHolder()
 
     var body: some View {
-        RemindersScreen(
-            services: services,
-            sync: reminderSync ?? ReminderSync(services: services, scheduler: FakeNotificationScheduler())
-        )
+        RemindersScreen(services: services, sync: reminderSync ?? fallback.sync(for: services))
+    }
+}
+
+/// Creates the previews-only `ReminderSync` once, not on every body evaluation.
+@MainActor
+private final class FallbackSyncHolder {
+    private var cached: ReminderSync?
+
+    func sync(for services: AppServices) -> ReminderSync {
+        if let cached { return cached }
+        let sync = ReminderSync(services: services, scheduler: FakeNotificationScheduler())
+        cached = sync
+        return sync
     }
 }
 

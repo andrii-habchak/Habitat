@@ -76,7 +76,7 @@ struct ReminderEditorView: View {
             if model.habitChoices.isEmpty {
                 Text("No active habits. Add a habit first.")
                     .foregroundStyle(.primary)
-                    .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "habit"))
+                    .accessibilityIdentifier(AccessibilityID.make("reminders", "editor", "noHabits"))
             } else {
                 Picker("Habit", selection: $model.habitID) {
                     ForEach(model.habitChoices) { habit in

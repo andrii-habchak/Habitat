@@ -120,14 +120,17 @@ final class ReminderSync {
     /// reminders of that habit on that day are dropped.
     func markDone(habitID: UUID, day: DayKey) async {
         let completions = services.completionRepository()
+        var toggleError: String?
         do {
             if try !completions.isDone(habitID: habitID, day: day) {
                 try completions.toggle(habitID: habitID, day: day)
             }
         } catch {
-            lastErrorMessage = error.localizedDescription
+            toggleError = error.localizedDescription
         }
         await replanAndWait()
+        // A successful re-plan clears `lastErrorMessage`; keep the refused toggle visible.
+        if let toggleError { lastErrorMessage = toggleError }
     }
 }
 
