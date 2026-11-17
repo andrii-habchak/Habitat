@@ -25,6 +25,10 @@ Examples:
 | `habits.row.<habitId>` | a habit's row in the list |
 | `week.cell.<habitId>.<yyyy-MM-dd>` | a habit/day toggle in the week grid |
 | `month.day.<yyyy-MM-dd>` | a day's donut in the month grid |
+| `reminders.editor.habit` | habit picker in the reminder editor |
+| `reminders.editor.noHabits` | "No active habits" text in the reminder editor (its own id) |
+| `habits.archiveCancel` | Cancel button of the archive dialog; may not exist when the system presents the dialog as a popover (no Cancel there) |
+| `settings.notifications` | Settings row that opens the system notification settings |
 
 Rules:
 
@@ -52,6 +56,6 @@ Parsed by `LaunchOptions` (`HabitatKit/Sources/HabitatCore/LaunchOptions.swift`)
 | Argument | Effect |
 |----------|--------|
 | `-uiTesting` | in-memory store, nothing written to disk |
-| `-seed <fixture>` | load the named seed fixture (fixtures arrive in P2) |
+| `-seed <fixture>` | load the named seed fixture (`empty`, `typical`, `streaks`); an unknown name is logged and ignored |
 | `-today yyyy-MM-dd` | pin "today" to that day; an invalid day is ignored |
 | `-fakeNotifications` | use the fake notification scheduler (P2/P6) |

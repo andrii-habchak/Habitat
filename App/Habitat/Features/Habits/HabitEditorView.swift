@@ -43,6 +43,7 @@ struct HabitEditorView: View {
         Section {
             TextField("Name", text: $model.name)
                 .textInputAutocapitalization(.sentences)
+                .autocorrectionDisabled()
                 .submitLabel(.done)
                 .onChange(of: model.name) { model.clearError() }
                 .accessibilityIdentifier(AccessibilityID.make("habits", "editor.name"))

@@ -1,5 +1,6 @@
 import HabitatData
 import SwiftUI
+import UIKit
 import UniformTypeIdentifiers
 
 /// Settings screen (R-DATA): export and import, about.
@@ -28,6 +29,7 @@ struct SettingsView: View {
 private struct SettingsScreen: View {
     @Bindable var model: SettingsModel
     @Environment(\.reminderSync) private var reminderSync
+    @Environment(\.openURL) private var openURL
     @State private var showImporter = false
     @State private var showShare = false
 
@@ -79,6 +81,21 @@ private struct SettingsScreen: View {
                 }
             } header: {
                 Text("Data")
+            }
+
+            Section {
+                Button {
+                    if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                        openURL(url)
+                    }
+                } label: {
+                    Label("Notification settings", systemImage: "bell")
+                        .frame(minHeight: Theme.minTapTarget, alignment: .leading)
+                }
+                .accessibilityIdentifier("settings.notifications")
+                .accessibilityHint("Opens Habitat's notification settings in the Settings app")
+            } header: {
+                Text("Notifications")
             }
 
             Section {

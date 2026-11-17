@@ -35,6 +35,9 @@ private struct WeekScreen: View {
                         withAnimation { model.goPrevious() }
                     } label: {
                         Label("Previous week", systemImage: "chevron.left")
+                            .labelStyle(.iconOnly)
+                            .frame(minWidth: Theme.minTapTarget, minHeight: Theme.minTapTarget)
+                            .contentShape(Rectangle())
                     }
                     .disabled(!model.canGoPrevious)
                     .accessibilityIdentifier(AccessibilityID.make("week", "previous"))
@@ -44,6 +47,9 @@ private struct WeekScreen: View {
                         withAnimation { model.goNext() }
                     } label: {
                         Label("Next week", systemImage: "chevron.right")
+                            .labelStyle(.iconOnly)
+                            .frame(minWidth: Theme.minTapTarget, minHeight: Theme.minTapTarget)
+                            .contentShape(Rectangle())
                     }
                     .disabled(!model.canGoNext)
                     .accessibilityIdentifier(AccessibilityID.make("week", "next"))
@@ -254,11 +260,12 @@ private struct DayToggle: View {
                 }
             }
             .frame(width: 32, height: 32)
-            .frame(minWidth: Theme.minTapTarget, minHeight: Theme.minTapTarget)
+            .frame(width: Theme.minTapTarget, height: Theme.minTapTarget)
             .contentShape(Rectangle())
             .opacity(cell.isEnabled ? 1 : 0.3)
         }
         .buttonStyle(.plain)
+        .frame(minWidth: Theme.minTapTarget, minHeight: Theme.minTapTarget)
         .disabled(!cell.isEnabled)
         .accessibilityLabel(
             "\(row.habit.name), \(WeekFormat.spokenDay(cell.day))" + (cell.day == today ? ", today" : "")
