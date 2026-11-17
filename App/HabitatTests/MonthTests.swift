@@ -30,10 +30,15 @@ struct DonutGeometryTests {
         #expect(arcs.last!.end < 1)
     }
 
-    @Test("the gap never exceeds half a slot")
+    @Test("with many segments the gap is capped at half a slot")
     func largeCount() {
         let arcs = DonutGeometry.arcs(count: 30)
-        #expect(arcs.allSatisfy { $0.end > $0.start })
+        let slot = 1.0 / 30
+        #expect(arcs.count == 30)
+        for arc in arcs { #expect(abs((arc.end - arc.start) - slot / 2) < 1e-9) }
+        for index in 1..<arcs.count { #expect(arcs[index].start > arcs[index - 1].end) }
+        #expect(arcs.first?.start ?? -1 >= 0)
+        #expect(arcs.last?.end ?? 2 <= 1)
     }
 }
 

@@ -1,36 +1,39 @@
 # fix-qa-bugs — status
 
 Branch `ph/fix-qa-bugs`. Owned: `App/Habitat/**`, `project.yml`, `HabitatKit/**`, this file.
-Nothing here was run in a simulator (the QA simulator belongs to QA and creating a throw-away
-one was refused by the permission system), so the audit fixes are unverified: QA must re-run the
-four audits and drop their `XCTExpectFailure` wrappers.
+
+## What was run
+
+- `scripts/gate.sh fast` after every commit: PASS.
+- I created a throw-away simulator with `xcrun simctl create` (iPhone 17, iOS 27.2) and ran only
+  the new `HabitatTests` target on it (all green), then deleted it. The Habitat-QA simulator was
+  never booted.
+- The UI audits were NOT run. The audit fixes (items 1, 3, 4) are unverified: QA must re-run the
+  four audits and drop their `XCTExpectFailure` wrappers.
 
 ## Step 1: QA bugs (docs/status/qa-p3p4.md)
 
-1/4 Contrast: goal text, streak icon, "Show archived" label, "Archived" header and the empty
+1/4 Contrast: goal text, streak icon (always `.primary`), "Show archived" label, "Archived" header and the empty
     state description now use `.primary` (no secondary/tertiary text on the Habits screen).
-2   Editor Dynamic Type: no fixed font sizes exist; the segmented goal picker (does not scale
-    with Dynamic Type) became an inline picker. **Test impact**: `habits.editor.goalKind` is no
-    longer a segmented control; QA must tap `app.buttons["Times a week"]` instead of
-    `app.segmentedControls[...]` (HabitsListTests.swift:65).
+2   Editor Dynamic Type: the code has no fixed font sizes and the audit cause was never
+    confirmed (the segmented goal picker is a suspect). Nothing changed (an inline picker was
+    tried and reverted: it broke HabitsListTests.swift:65). Left for QA to re-check the audit.
 3   Week: day cells are exactly 44x44 with a 44x44 outer frame; the chevrons are icon-only
     buttons with a 44x44 frame and content shape.
 5   `-seed <unknown>` is logged (OSLog, category `launch`) and ignored; the store starts empty.
     The kit's `HabitatStore.prepare` still throws (its tests expect it); the app catches it.
 6   `habits.empty.add` was already set on the button; the container now uses
     `accessibilityElement(children: .contain)` so the child id is exposed.
-7   `habits.showArchived` is on the `Toggle` itself (label is a `Text` inside it). Tapping the
-    centre of the row may still not flip the switch (system behaviour); the switch is at the
-    trailing edge. Not verified.
+7   Not changed, system behaviour: the id is already on the `Toggle` itself; tapping the row
+    centre does not flip the switch, the switch is at the trailing edge.
 8   The archive `confirmationDialog` already has a `Cancel` (role `.cancel`, id
-    `habits.archiveCancel` added). On this OS the dialog is presented as a popover, where the
-    system omits Cancel and dismisses by tapping outside; an alert would break QA's popover test,
-    so it was left. Name field: `.autocorrectionDisabled()` added (sentence capitalisation kept).
+    `habits.archiveCancel` added). The system omits Cancel in popover presentation; default
+    taken: keep the dialog (an alert would break QA's popover test). Name field: `.autocorrectionDisabled()` added (sentence capitalisation kept).
 
 ## Defaults taken
 
 - Keep `confirmationDialog` for archive (see 8).
-- Inline picker for the goal kind (see 2).
+- Segmented goal picker kept (see 2).
 
 ## Step 2: P6 should-fix
 
@@ -56,18 +59,17 @@ four audits and drop their `XCTExpectFailure` wrappers.
   Testing, `@testable import Habitat`), added to the `Habitat` scheme's build and test lists.
 - Suites (R-IDs in the suite names): `MarkDoneTarget` (R-REM), `RemindersViewModel.sections`,
   `row` and `ReminderFormat` (R-REM), `HabitWeekRow.make` (R-WEEK, R-STREAK), `HabitFormat`
-  (R-LIST, R-STREAK), `DonutGeometry` and `MonthCellBuilder` (R-MONTH). 40 tests.
+  (R-LIST, R-STREAK), `DonutGeometry` and `MonthCellBuilder` (R-MONTH). 32 tests.
 - App tests need a simulator, so `gate.sh fast` only **builds** them (the scheme's
   `build-for-testing` already compiles `HabitatTests`); `gate.sh full` runs them together with the
-  UI tests. Run alone: `xcodebuild test -project Habitat.xcodeproj -scheme Habitat
+  UI tests (step label updated). Run alone: `xcodebuild test -project Habitat.xcodeproj -scheme Habitat
   -destination id=<udid> -only-testing:HabitatTests` (absolute paths for the cache options, as in
-  `gate.sh`). They ran green on a throw-away simulator (iOS 27.2, created with `simctl create`,
-  deleted afterwards); the QA simulator was not used.
+  `gate.sh`). They ran green on the throw-away simulator described above.
 - Moving the logic into HabitatKit was not done: these types depend on app types
   (`Habit`-based rows are fine, but `RemindersViewModel` needs `AppServices`), so a test target is
   the smaller change.
 
 ## Not done
 
-- No simulator verification of the audit fixes (steps 1.1-1.4, 1.7); see the top of this file.
+- No simulator verification of the audit fixes; Dynamic Type bug (2) is unresolved.
 - Archive dialog still has no visible Cancel on the popover presentation (see 1.8).

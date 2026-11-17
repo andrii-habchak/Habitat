@@ -99,8 +99,7 @@ struct HabitEditorView: View {
                 Text("Every day").tag(HabitEditorModel.GoalKind.daily)
                 Text("Times a week").tag(HabitEditorModel.GoalKind.weekly)
             }
-            .pickerStyle(.inline)
-            .labelsHidden()
+            .pickerStyle(.segmented)
             .accessibilityIdentifier(AccessibilityID.make("habits", "editor.goalKind"))
             if model.goalKind == .weekly {
                 Stepper(

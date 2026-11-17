@@ -2,7 +2,7 @@
 # Local quality gate (DECISIONS D8: no hosted CI).
 #
 #   scripts/gate.sh fast   lint, package tests, app + UI-test build for the simulator
-#   scripts/gate.sh full   fast + XCUITests on the Habitat-QA simulator (QA agents only)
+#   scripts/gate.sh full   fast + HabitatTests and XCUITests on the Habitat-QA simulator (QA agents only)
 #
 # All build output goes to build.noindex/ (git-ignored). Warnings are errors everywhere:
 # swiftlint --strict, `.treatAllWarnings(as: .error)` in HabitatKit, and
@@ -76,7 +76,7 @@ if [ "$mode" = full ]; then
     udid="$(tr -d '[:space:]' <"$udid_file")"
   fi
   mkdir -p "$build/results"
-  step "xcodebuild test (XCUITests on $udid)"
+  step "xcodebuild test (HabitatTests + XCUITests on $udid)"
   run_logged xcodebuild-test xcodebuild test "${xcodebuild_common[@]}" \
     -destination "id=$udid" \
     -resultBundlePath "$build/results/ui-$(date +%Y%m%d-%H%M%S).xcresult"

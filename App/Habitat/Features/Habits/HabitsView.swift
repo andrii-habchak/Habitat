@@ -146,7 +146,7 @@ struct HabitsView: View {
                     .accessibilityHidden(true)
                 let streakView = HStack(spacing: Theme.Spacing.extraSmall) {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(row.streak > 0 ? Theme.Status.inProgress : Color.primary)
+                        .foregroundStyle(Color.primary)
                     Text(HabitFormat.shortStreak(row.streak, goal: habit.goal))
                         .font(.body.monospacedDigit())
                         .foregroundStyle(.primary)
