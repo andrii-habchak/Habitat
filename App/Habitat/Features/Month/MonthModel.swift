@@ -100,31 +100,37 @@ enum MonthCellBuilder {
     }
 }
 
-/// Localised day names without `Date` arithmetic.
+/// Localised month and day names. The calendar needs an explicit locale: a bare
+/// `Calendar(identifier:)` returns placeholder symbols such as "M11".
 enum MonthSymbols {
-    private static let calendar = Calendar(identifier: .gregorian)
+    private static func calendar(_ locale: Locale) -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
+        return calendar
+    }
 
-    static func monthName(_ month: Int) -> String {
-        calendar.monthSymbols[month - 1]
+    static func monthName(_ month: Int, locale: Locale = .current) -> String {
+        calendar(locale).monthSymbols[month - 1]
     }
 
     /// Full weekday name, e.g. "Monday".
-    static func weekdayName(_ weekday: Weekday) -> String {
-        calendar.weekdaySymbols[weekday.rawValue % 7]
+    static func weekdayName(_ weekday: Weekday, locale: Locale = .current) -> String {
+        calendar(locale).weekdaySymbols[weekday.rawValue % 7]
     }
 
     /// Header text, Monday first; one letter when `compact`.
-    static func header(_ weekday: Weekday, compact: Bool) -> String {
+    static func header(_ weekday: Weekday, compact: Bool, locale: Locale = .current) -> String {
+        let calendar = calendar(locale)
         let symbols = compact ? calendar.veryShortStandaloneWeekdaySymbols : calendar.shortStandaloneWeekdaySymbols
         return symbols[weekday.rawValue % 7]
     }
 
-    static func title(_ month: Month) -> String {
-        "\(monthName(month.month)) \(month.year)"
+    static func title(_ month: Month, locale: Locale = .current) -> String {
+        "\(monthName(month.month, locale: locale)) \(month.year)"
     }
 
     /// "Monday 2 November".
-    static func dayName(_ day: DayKey) -> String {
-        "\(weekdayName(day.weekday)) \(day.day) \(monthName(day.month))"
+    static func dayName(_ day: DayKey, locale: Locale = .current) -> String {
+        "\(weekdayName(day.weekday, locale: locale)) \(day.day) \(monthName(day.month, locale: locale))"
     }
 }

@@ -116,3 +116,37 @@ struct MonthCellBuilderTests {
         #expect(!leading.isInMonth)
     }
 }
+
+/// R-MONTH, R-A11Y: month and weekday names are resolved (regression: "M11 2026").
+@Suite("MonthSymbols (R-MONTH, R-A11Y)")
+struct MonthSymbolsTests {
+    private let english = Locale(identifier: "en_US")
+
+    @Test("title names the month and year")
+    func title() throws {
+        let november = try #require(Month(year: 2026, month: 11))
+        #expect(MonthSymbols.title(november, locale: english) == "November 2026")
+    }
+
+    @Test("day names use the full weekday and month")
+    func dayName() throws {
+        let monday = try #require(DayKey("2026-10-26"))
+        let sunday = try #require(DayKey("2026-11-01"))
+        #expect(MonthSymbols.dayName(monday, locale: english) == "Monday 26 October")
+        #expect(MonthSymbols.dayName(sunday, locale: english) == "Sunday 1 November")
+    }
+
+    @Test("weekday headers are Monday first")
+    func headers() {
+        let long = Weekday.allCases.map { MonthSymbols.header($0, compact: false, locale: english) }
+        #expect(long == ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+        let short = Weekday.allCases.map { MonthSymbols.header($0, compact: true, locale: english) }
+        #expect(short == ["M", "T", "W", "T", "F", "S", "S"])
+    }
+
+    @Test("the default locale also gives real names, never placeholders")
+    func defaultLocale() {
+        #expect(!MonthSymbols.monthName(11).hasPrefix("M1"))
+        #expect(MonthSymbols.monthName(11) != "M11")
+    }
+}
