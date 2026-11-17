@@ -92,6 +92,9 @@ private struct SettingsScreen: View {
                     }
                 } label: {
                     Label("Notification settings", systemImage: "bell")
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
                         .frame(minHeight: Theme.minTapTarget, alignment: .leading)
                 }
                 .accessibilityIdentifier("settings.notifications")

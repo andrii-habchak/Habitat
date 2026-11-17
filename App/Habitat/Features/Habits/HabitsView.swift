@@ -82,6 +82,7 @@ struct HabitsView: View {
                     openNew()
                 } label: {
                     Text("Add habit")
+                        .foregroundStyle(.white)
                         .padding(.horizontal, Theme.Spacing.medium)
                         .frame(minHeight: Theme.minTapTarget)
                         .contentShape(Rectangle())
@@ -93,10 +94,12 @@ struct HabitsView: View {
             .foregroundStyle(.primary)
             .padding(Theme.Spacing.large)
             .frame(maxWidth: .infinity)
+            // On the content, inside the scroll view: an id on the ScrollView itself is
+            // overridden by the screen's `habits.screen`.
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
         }
         .scrollBounceBehavior(.basedOnSize)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier(AccessibilityID.make("habits", "empty"))
     }
 
     private func list(_ model: HabitsViewModel) -> some View {

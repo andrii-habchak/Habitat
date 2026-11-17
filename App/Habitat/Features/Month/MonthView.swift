@@ -88,6 +88,9 @@ struct MonthView: View {
 
             Text(MonthSymbols.title(month))
                 .font(.title2.bold())
+                .lineLimit(2)
+                .minimumScaleFactor(0.6)
+                .allowsTightening(true)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .accessibilityAddTraits(.isHeader)

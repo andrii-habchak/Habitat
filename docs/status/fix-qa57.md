@@ -74,3 +74,15 @@ Owner-visible changes:
   44 pt tall button label and the darker prominent tint.
 - Section headers in the habit editor, reminder editor, Settings, Reminders and Habits
   ("Archived") use increased prominence (primary colour, larger).
+
+## Round 3c (QA screenshots)
+
+- BUG-QA57-12: the empty-state button text was black because the parent's `.foregroundStyle(.primary)`
+  also applied to the label; the label is now explicitly `.white` on #2563EB (about 5:1, also dark).
+- BUG-QA57-13: the empty-day ring was `thin` (about 3 pt); now 1 pt `.primary`.
+- BUG-QA57-14: Month title and the Settings notifications row get `lineLimit(2)`,
+  `minimumScaleFactor` and `allowsTightening` instead of breaking words.
+- BUG-QA-REG-1: `habits.empty` moved to the content `VStack` inside the ScrollView
+  (`.contain`), since an id on the ScrollView lost to `habits.screen`. Unverified; if the tree still
+  shows no `habits.empty`, it cannot be exposed without losing the child ids (accept and drop it).
+- Nothing was run (no simulator).
