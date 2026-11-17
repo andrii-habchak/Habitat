@@ -63,3 +63,14 @@ is inferred.
 | BUG-QA-REG-1 `habits.empty` | `ContentUnavailableView` swallows child ids; with `.contain` the container reported `habits.screen` | Empty state built by hand as a `VStack` with `.contain`: `habits.empty` on the container, `habits.empty.add` on the button |
 
 Defaults: the empty month ring is a stark thin `.primary` line (visual change, for the audit).
+
+## Defaults taken (round 3 review)
+
+Owner-visible changes:
+- Out-of-month days in the Month grid are no longer dimmed: they use a smaller text style
+  (`.caption2`, regular weight) in `.primary`, and are told apart by size only.
+- A day without active habits shows a thin `.primary` ring (was a faint grey one).
+- The Habits empty state is a scrollable hand-built view (no `ContentUnavailableView`), with a
+  44 pt tall button label and the darker prominent tint.
+- Section headers in the habit editor, reminder editor, Settings, Reminders and Habits
+  ("Archived") use increased prominence (primary colour, larger).

@@ -56,18 +56,23 @@ struct HabitEditorView: View {
             }
         } header: {
             Text("Name")
+                .foregroundStyle(.primary)
         }
+        .headerProminence(.increased)
     }
 
     private var colorSection: some View {
-        Section("Colour") {
+        Section {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: Theme.minTapTarget))], spacing: Theme.Spacing.small) {
                 ForEach(Theme.habitPalette, id: \.self) { hex in
                     swatch(hex)
                 }
             }
             .padding(.vertical, Theme.Spacing.extraSmall)
+        } header: {
+            Text("Colour").foregroundStyle(.primary)
         }
+        .headerProminence(.increased)
     }
 
     private func swatch(_ hex: String) -> some View {
@@ -96,7 +101,7 @@ struct HabitEditorView: View {
     }
 
     private var goalSection: some View {
-        Section("Goal") {
+        Section {
             Picker("Goal", selection: $model.goalKind) {
                 Text("Every day").tag(HabitEditorModel.GoalKind.daily)
                 Text("Times a week").tag(HabitEditorModel.GoalKind.weekly)
@@ -111,7 +116,10 @@ struct HabitEditorView: View {
                 )
                 .accessibilityIdentifier(AccessibilityID.make("habits", "editor.weeklyCount"))
             }
+        } header: {
+            Text("Goal").foregroundStyle(.primary)
         }
+        .headerProminence(.increased)
     }
 
     /// Names for the palette entries, for VoiceOver.
