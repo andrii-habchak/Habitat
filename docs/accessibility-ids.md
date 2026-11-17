@@ -29,6 +29,7 @@ Examples:
 | `reminders.editor.habit` | habit picker in the reminder editor |
 | `reminders.editor.noHabits` | "No active habits" text in the reminder editor (its own id) |
 | `habits.archiveCancel` | Cancel button of the archive dialog |
+| `settings.notifications` | Settings row that opens the system notification settings |
 
 Rules:
 
