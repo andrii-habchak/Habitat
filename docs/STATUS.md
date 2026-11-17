@@ -2,6 +2,8 @@
 
 ## Now
 
+Run 2 (2026-11-17): fix lane `ph/fix-qa-bugs` reviewed and merged (fast gate green). QA lane `ph/qa-p5p7` (Month, Reminders, Settings tests, screenshots) was still running its full UI test run at 21:33, nothing committed on it yet. Audit fixes from the fix lane are not verified in a simulator. Device install paused: Xcode could not create the provisioning profile (developerservices2.apple.com times out behind the work VPN); retry off the VPN.
+
 Run 1 ended (STOP, 2026-11-04 02:00). P0-P7 are merged on `integration` (fast gate green). QA of P3+P4 is parked on `ph/qa-p3p4`, not merged. QA of Month, Reminders and Settings has not run.
 
 ## Phases
